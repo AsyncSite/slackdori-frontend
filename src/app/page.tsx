@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   }
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function HomePage() {
   const packs = await api.getPacks();
   const featuredPacks = packs.filter(p => p.featured);
