@@ -11,7 +11,6 @@ import type {
   SlackWorkspace,
   InstallResult,
   InstallJob,
-  Emoji
 } from './types';
 
 export class BackendAPI implements ISlackDoriAPI {
@@ -153,7 +152,7 @@ export class BackendAPI implements ISlackDoriAPI {
   }
 
   // Installation
-  async installPack(packId: string, workspaceId: string): Promise<InstallResult> {
+  async installPack(packId: string, _workspaceId: string): Promise<InstallResult> {
     try {
       const headers: HeadersInit = {
         'Content-Type': 'application/json'
