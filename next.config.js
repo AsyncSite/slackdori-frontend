@@ -97,31 +97,7 @@ const nextConfig = {
   
   // Redirects for SEO
   async redirects() {
-    // Only apply redirects in production
-    if (process.env.NODE_ENV === 'development') {
-      return [];
-    }
-    
-    return [
-      // Redirect www to non-www
-      {
-        source: '/:path*',
-        has: [
-          {
-            type: 'host',
-            value: 'www.slackdori.asyncsite.com',
-          },
-        ],
-        destination: 'https://slackdori.asyncsite.com/:path*',
-        permanent: true,
-      },
-      // Redirect trailing slashes
-      {
-        source: '/:path*/',
-        destination: '/:path*',
-        permanent: true,
-      },
-    ];
+    return [];  // Temporarily disable all redirects to fix infinite loop
   },
   
   // Rewrites for API proxy
