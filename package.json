@@ -33,8 +33,6 @@
     "test:coverage": "jest --coverage",
     "analyze": "ANALYZE=true next build",
     "lighthouse": "npx lighthouse http://localhost:3000 --output html --output-path ./lighthouse-report.html",
-    "seo:validate": "node scripts/validate-seo.js",
-    "sitemap:generate": "node scripts/generate-sitemap.js",
     "pre-commit": "lint-staged",
     "build:dev": "NODE_ENV=development next build",
     "build:staging": "NODE_ENV=staging next build",

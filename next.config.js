@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-});
+// Conditionally load bundle analyzer only if available
+let withBundleAnalyzer = (config) => config;
+try {
+  withBundleAnalyzer = require('@next/bundle-analyzer')({
+    enabled: process.env.ANALYZE === 'true',
+  });
+} catch (e) {
+  // Bundle analyzer not installed, skip
+}
 
 // Security headers for production
 const securityHeaders = [
@@ -186,23 +192,21 @@ const nextConfig = {
   
   // Webpack configuration
   webpack: (config, { dev, isServer }) => {
-    // Bundle analyzer in development
+    // Bundle analyzer in development (only if installed)
     if (dev && !isServer && process.env.ANALYZE === 'true') {
-      const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          reportFilename: './analyze.html',
-          openAnalyzer: true,
-        })
-      );
+      try {
+        const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+        config.plugins.push(
+          new BundleAnalyzerPlugin({
+            analyzerMode: 'static',
+            reportFilename: './analyze.html',
+            openAnalyzer: true,
+          })
+        );
+      } catch (e) {
+        // webpack-bundle-analyzer not installed, skip
+      }
     }
-    
-    // Ignore specific modules
-    config.module.rules.push({
-      test: /\.md$/,
-      use: 'raw-loader',
-    });
     
     return config;
   },
