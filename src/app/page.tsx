@@ -1,11 +1,25 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { api } from '@/lib/api';
 
 export const metadata: Metadata = {
   title: 'SlackDori - One-Click Slack Emoji Pack Installation',
   description: 'Transform your Slack workspace with curated emoji packs. Install developer, Korean, and custom emoji collections instantly.',
+  keywords: 'slack emoji pack, bulk install slack emojis, slack emoji download, free slack emojis',
+  openGraph: {
+    title: 'SlackDori - Bulk Install Slack Emojis',
+    description: 'One-click installation for curated Slack emoji packs',
+    type: 'website',
+  }
 };
 
-export default function HomePage(): React.ReactElement {
+export default async function HomePage() {
+  const packs = await api.getPacks();
+  const featuredPacks = packs.filter(p => p.featured);
+  const totalEmojis = packs.reduce((sum, p) => sum + p.emojiCount, 0);
+  
+  const REPO_BASE = 'https://raw.githubusercontent.com/AsyncSite/slack-emoji-packs/main';
+  
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
@@ -19,20 +33,31 @@ export default function HomePage(): React.ReactElement {
               Transform your Slack workspace with curated emoji packs. 
               No more adding emojis one by one.
             </p>
-            <div className="flex gap-4 justify-center">
-              <button className="btn-secondary">
-                Browse Emoji Packs
-              </button>
-              <button className="bg-white text-slack-purple px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-200">
+            <div className="flex gap-4 justify-center mb-8">
+              <Link href="/packs" className="btn-secondary">
+                Browse {packs.length} Emoji Packs
+              </Link>
+              <Link href="#how-it-works" className="bg-white text-slack-purple px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-200">
                 How It Works
-              </button>
+              </Link>
+            </div>
+            <div className="flex gap-6 justify-center text-sm">
+              <span className="bg-white/20 px-4 py-2 rounded-full">
+                {packs.length} Packs Available
+              </span>
+              <span className="bg-white/20 px-4 py-2 rounded-full">
+                {totalEmojis} Total Emojis
+              </span>
+              <span className="bg-white/20 px-4 py-2 rounded-full">
+                100% Free
+              </span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16">
+      <section className="py-16" id="how-it-works">
         <div className="container">
           <h2 className="text-3xl font-bold text-center mb-12">
             Why SlackDori?
@@ -63,74 +88,98 @@ export default function HomePage(): React.ReactElement {
         </div>
       </section>
 
-      {/* Popular Packs Section */}
+      {/* Featured Packs Section */}
       <section className="py-16 bg-gray-100">
         <div className="container">
           <h2 className="text-3xl font-bold text-center mb-12">
-            Popular Emoji Packs
+            Featured Emoji Packs
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Pack Card 1 */}
-            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">Developer Essentials</h3>
-                <span className="text-sm bg-slack-purple text-white px-2 py-1 rounded">50 emojis</span>
+            {featuredPacks.map(pack => (
+              <div key={pack.id} className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">{pack.name}</h3>
+                  <span className="text-sm bg-slack-purple text-white px-2 py-1 rounded">
+                    {pack.emojiCount} emojis
+                  </span>
+                </div>
+                <p className="text-gray-600 mb-4 line-clamp-2">
+                  {pack.description}
+                </p>
+                <div className="flex gap-2 mb-4 items-center">
+                  {pack.preview.slice(0, 4).map(emojiName => (
+                    <img
+                      key={emojiName}
+                      src={`${REPO_BASE}/images/${pack.id}/${emojiName}.png`}
+                      alt={emojiName}
+                      className="w-10 h-10"
+                      loading="lazy"
+                    />
+                  ))}
+                  {pack.emojiCount > 4 && (
+                    <span className="text-gray-400">+{pack.emojiCount - 4}</span>
+                  )}
+                </div>
+                <Link href={`/packs/${pack.id}`} className="block">
+                  <button className="w-full btn-primary">
+                    View Pack
+                  </button>
+                </Link>
               </div>
-              <p className="text-gray-600 mb-4">
-                Debug, deploy, and celebrate with developer-focused emojis
-              </p>
-              <div className="flex gap-2 mb-4">
-                <span className="text-2xl">🐛</span>
-                <span className="text-2xl">🚀</span>
-                <span className="text-2xl">💻</span>
-                <span className="text-2xl">🔥</span>
-                <span className="text-gray-400">+46</span>
-              </div>
-              <button className="w-full btn-primary">
-                View Pack
-              </button>
-            </div>
+            ))}
+          </div>
+          
+          <div className="text-center mt-8">
+            <Link href="/packs" className="btn-secondary inline-block">
+              Browse All Packs →
+            </Link>
+          </div>
+        </div>
+      </section>
 
-            {/* Pack Card 2 */}
-            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">Korean Reactions</h3>
-                <span className="text-sm bg-slack-purple text-white px-2 py-1 rounded">30 emojis</span>
+      {/* How It Works Section */}
+      <section className="py-16">
+        <div className="container">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            How It Works
+          </h2>
+          <div className="max-w-3xl mx-auto">
+            <div className="space-y-8">
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-slack-purple text-white rounded-full flex items-center justify-center font-bold">
+                  1
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Browse Emoji Packs</h3>
+                  <p className="text-gray-600">
+                    Explore our curated collection of emoji packs for every team and occasion
+                  </p>
+                </div>
               </div>
-              <p className="text-gray-600 mb-4">
-                Express yourself with popular Korean culture emojis
-              </p>
-              <div className="flex gap-2 mb-4">
-                <span className="text-2xl">🤟</span>
-                <span className="text-2xl">💜</span>
-                <span className="text-2xl">✨</span>
-                <span className="text-2xl">🎉</span>
-                <span className="text-gray-400">+26</span>
+              
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-slack-purple text-white rounded-full flex items-center justify-center font-bold">
+                  2
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">Connect Your Slack</h3>
+                  <p className="text-gray-600">
+                    Securely authenticate with Slack using official OAuth (admin permissions required)
+                  </p>
+                </div>
               </div>
-              <button className="w-full btn-primary">
-                View Pack
-              </button>
-            </div>
-
-            {/* Pack Card 3 */}
-            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold">Project Status</h3>
-                <span className="text-sm bg-slack-purple text-white px-2 py-1 rounded">20 emojis</span>
+              
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 w-12 h-12 bg-slack-purple text-white rounded-full flex items-center justify-center font-bold">
+                  3
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">One-Click Install</h3>
+                  <p className="text-gray-600">
+                    Click install and watch as all emojis are added to your workspace automatically
+                  </p>
+                </div>
               </div>
-              <p className="text-gray-600 mb-4">
-                Visual project management with status indicator emojis
-              </p>
-              <div className="flex gap-2 mb-4">
-                <span className="text-2xl">✅</span>
-                <span className="text-2xl">⏳</span>
-                <span className="text-2xl">🚧</span>
-                <span className="text-2xl">❌</span>
-                <span className="text-gray-400">+16</span>
-              </div>
-              <button className="w-full btn-primary">
-                View Pack
-              </button>
             </div>
           </div>
         </div>
@@ -145,9 +194,9 @@ export default function HomePage(): React.ReactElement {
           <p className="text-xl mb-8 opacity-90">
             Join thousands of teams using SlackDori to enhance their communication
           </p>
-          <button className="btn-secondary text-lg px-8 py-4">
+          <Link href="/packs" className="btn-secondary text-lg px-8 py-4 inline-block">
             Get Started Free
-          </button>
+          </Link>
         </div>
       </section>
     </main>

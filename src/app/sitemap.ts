@@ -1,9 +1,14 @@
 import { MetadataRoute } from 'next';
+import { api } from '@/lib/api';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://slackdori.asyncsite.com';
   
-  return [
+  // Fetch all packs for dynamic routes
+  const packs = await api.getPacks();
+  
+  // Static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -16,11 +21,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 0.9,
     },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
   ];
+  
+  // Dynamic pack pages
+  const packPages: MetadataRoute.Sitemap = packs.map(pack => ({
+    url: `${baseUrl}/packs/${pack.id}`,
+    lastModified: new Date(pack.updatedAt),
+    changeFrequency: 'weekly' as const,
+    priority: 0.8,
+  }));
+  
+  return [...staticPages, ...packPages];
 }
