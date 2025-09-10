@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   description: 'Transform your Slack workspace with curated emoji packs. Install developer, Korean, and custom emoji collections instantly.',
 };
 
-export default function HomePage() {
+export default function HomePage(): React.ReactElement {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
