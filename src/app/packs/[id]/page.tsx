@@ -98,7 +98,7 @@ export default function PackDetailPage() {
             <div>
               <h3 className="text-lg font-semibold mb-3">Option 1: One-Click Install (Coming Soon)</h3>
               <p className="text-gray-600 mb-3">
-                We're working on automatic installation. Soon you'll be able to install all emojis with just one click!
+                We&apos;re working on automatic installation. Soon you&apos;ll be able to install all emojis with just one click!
               </p>
               <button 
                 className="bg-gray-300 text-gray-500 px-6 py-3 rounded-lg cursor-not-allowed"
@@ -114,7 +114,7 @@ export default function PackDetailPage() {
                 <li>Download the emoji pack as a ZIP file</li>
                 <li>Go to your Slack workspace</li>
                 <li>Navigate to Settings → Customize Workspace → Emoji</li>
-                <li>Click "Add Custom Emoji"</li>
+                <li>Click &quot;Add Custom Emoji&quot;</li>
                 <li>Upload each emoji image and set its name</li>
               </ol>
               <button 
@@ -175,5 +175,5 @@ function InstallButton({ packId }: { packId: string }) {
 async function downloadPack(pack: PackDetails) {
   // In a real implementation, this would create a ZIP file
   // For now, we'll just alert the user
-  alert(`Download feature for "${pack.name}" coming soon! You can manually save the images from the grid below.`);
+  alert(`Download feature for &quot;${pack.name}&quot; coming soon! You can manually save the images from the grid below.`);
 }
