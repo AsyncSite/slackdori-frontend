@@ -4,6 +4,7 @@
 
 import { ISlackDoriAPI } from './interface';
 import { GitHubAPI } from './github-implementation';
+import { BackendAPI } from './backend-implementation';
 
 export * from './types';
 export type { ISlackDoriAPI } from './interface';
@@ -12,7 +13,7 @@ let apiInstance: ISlackDoriAPI | null = null;
 
 /**
  * Get API instance - singleton pattern
- * In future, this will return BackendAPI when NEXT_PUBLIC_USE_BACKEND=true
+ * Returns BackendAPI when NEXT_PUBLIC_USE_BACKEND=true
  */
 export function getAPI(): ISlackDoriAPI {
   if (!apiInstance) {
@@ -20,9 +21,7 @@ export function getAPI(): ISlackDoriAPI {
     const useBackend = process.env.NEXT_PUBLIC_USE_BACKEND === 'true';
     
     if (useBackend) {
-      // TODO: When backend is ready, uncomment this
-      // apiInstance = new BackendAPI(process.env.NEXT_PUBLIC_API_URL!);
-      apiInstance = new GitHubAPI();
+      apiInstance = new BackendAPI(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:13084');
     } else {
       apiInstance = new GitHubAPI();
     }

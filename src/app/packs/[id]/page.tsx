@@ -165,8 +165,9 @@ function InstallButton({ packId }: { packId: string }) {
       <button 
         className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold hover:bg-purple-50 transition-colors"
         onClick={() => {
-          // This will trigger OAuth flow when backend is ready
-          alert(`Slack authentication coming soon! Pack ID: ${packId}. For now, please use manual installation.`);
+          // Redirect to backend OAuth endpoint through Gateway
+          const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+          window.location.href = `${backendUrl}/api/public/slack-emoji/v1/slack/auth?packId=${packId}`;
         }}
       >
         Install to Slack
