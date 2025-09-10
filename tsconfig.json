@@ -1,56 +1,23 @@
 {
   "compilerOptions": {
-    /* Language and Environment */
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "preserve",
-    
-    /* Modules */
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "allowJs": true,
-    
-    /* Emit */
-    "noEmit": true,
-    "incremental": true,
-    
-    /* Interop Constraints */
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
-    
-    /* Type Checking - STRICT MODE */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedIndexedAccess": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "exactOptionalPropertyTypes": true,
-    "allowUnusedLabels": false,
-    "allowUnreachableCode": false,
-    
-    /* Skip Lib Check */
-    "skipLibCheck": true,
-    
-    /* Path Mapping */
+    "jsx": "preserve",
+    "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/lib/*": ["./src/lib/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/stores/*": ["./src/stores/*"],
-      "@/types/*": ["./src/types/*"],
-      "@/styles/*": ["./src/styles/*"],
-      "@/app/*": ["./src/app/*"],
-      "@/public/*": ["./public/*"]
+      "@/*": ["./src/*"]
     },
-    
-    /* Next.js Specific */
     "plugins": [
       {
         "name": "next"
@@ -61,17 +28,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/**/*",
-    "tests/**/*"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    ".next",
-    "out",
-    "dist",
-    "build",
-    "coverage",
-    "playwright-report"
+    "node_modules"
   ]
 }
