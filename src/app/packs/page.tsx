@@ -1,23 +1,27 @@
-import { Metadata } from 'next';
-import { api } from '@/lib/api';
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { api, EmojiPack } from '@/lib/api';
 
-export const metadata: Metadata = {
-  title: 'Slack Emoji Packs - Free Bulk Install | SlackDori',
-  description: 'Browse and install curated Slack emoji packs with one click. Developer emojis, Korean culture, reactions, and more. Free bulk emoji installation for Slack.',
-  keywords: 'slack emoji pack, bulk install slack emojis, free slack emojis, slack emoji download',
-  openGraph: {
-    title: 'Slack Emoji Packs - One-Click Bulk Install',
-    description: 'Install entire emoji packs to your Slack workspace instantly',
-    type: 'website',
+export default function PacksPage() {
+  const [packs, setPacks] = useState<EmojiPack[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    api.getPacks().then(data => {
+      setPacks(data);
+      setLoading(false);
+    });
+  }, []);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center">
+        <div className="text-2xl text-purple-600">Loading emoji packs...</div>
+      </div>
+    );
   }
-};
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-export default async function PacksPage() {
-  const packs = await api.getPacks();
   
   // Group packs by category
   const categories = Array.from(new Set(packs.map(p => p.category)));
@@ -76,7 +80,7 @@ export default async function PacksPage() {
   );
 }
 
-function PackCard({ pack }: { pack: any }) {
+function PackCard({ pack }: { pack: EmojiPack }) {
   const REPO_BASE = 'https://raw.githubusercontent.com/AsyncSite/slack-emoji-packs/main';
   
   return (

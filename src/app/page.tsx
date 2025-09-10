@@ -1,23 +1,28 @@
-import type { Metadata } from 'next';
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { api, EmojiPack } from '@/lib/api';
 
-export const metadata: Metadata = {
-  title: 'SlackDori - One-Click Slack Emoji Pack Installation',
-  description: 'Transform your Slack workspace with curated emoji packs. Install developer, Korean, and custom emoji collections instantly.',
-  keywords: 'slack emoji pack, bulk install slack emojis, slack emoji download, free slack emojis',
-  openGraph: {
-    title: 'SlackDori - Bulk Install Slack Emojis',
-    description: 'One-click installation for curated Slack emoji packs',
-    type: 'website',
+export default function HomePage() {
+  const [packs, setPacks] = useState<EmojiPack[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    api.getPacks().then(data => {
+      setPacks(data);
+      setLoading(false);
+    });
+  }, []);
+  
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-slack-purple to-slack-blue text-white flex items-center justify-center">
+        <div className="text-2xl">Loading...</div>
+      </main>
+    );
   }
-};
-
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-export default async function HomePage() {
-  const packs = await api.getPacks();
+  
   const featuredPacks = packs.filter(p => p.featured);
   const totalEmojis = packs.reduce((sum, p) => sum + p.emojiCount, 0);
   

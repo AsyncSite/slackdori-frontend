@@ -1,42 +1,31 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { api } from '@/lib/api';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, notFound } from 'next/navigation';
 import Link from 'next/link';
+import { api, PackDetails } from '@/lib/api';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: { id: string } 
-}): Promise<Metadata> {
-  const pack = await api.getPackDetails(params.id);
+export default function PackDetailPage() {
+  const params = useParams();
+  const [pack, setPack] = useState<PackDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   
-  if (!pack) {
-    return {
-      title: 'Pack Not Found | SlackDori'
-    };
-  }
-  
-  return {
-    title: `${pack.name} - Slack Emoji Pack | SlackDori`,
-    description: `${pack.description} Install ${pack.emojiCount} emojis to your Slack workspace with one click.`,
-    keywords: `${pack.name}, slack emoji, ${pack.tags.join(', ')}`,
-    openGraph: {
-      title: `${pack.name} - ${pack.emojiCount} Slack Emojis`,
-      description: pack.description,
-      images: pack.emojis.slice(0, 4).map(e => e.imageUrl),
+  useEffect(() => {
+    if (params.id) {
+      api.getPackDetails(params.id as string).then(data => {
+        setPack(data);
+        setLoading(false);
+      });
     }
-  };
-}
-
-export default async function PackDetailPage({ 
-  params 
-}: { 
-  params: { id: string } 
-}) {
-  const pack = await api.getPackDetails(params.id);
+  }, [params.id]);
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center">
+        <div className="text-2xl text-purple-600">Loading pack details...</div>
+      </div>
+    );
+  }
   
   if (!pack) {
     notFound();
@@ -183,7 +172,7 @@ function InstallButton({ packId }: { packId: string }) {
   );
 }
 
-async function downloadPack(pack: any) {
+async function downloadPack(pack: PackDetails) {
   // In a real implementation, this would create a ZIP file
   // For now, we'll just alert the user
   alert(`Download feature for "${pack.name}" coming soon! You can manually save the images from the grid below.`);
