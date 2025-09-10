@@ -64,20 +64,11 @@ const nextConfig = {
   // Optimize production builds
   productionBrowserSourceMaps: false,
   
-  // Enable experimental features for better performance
-  experimental: {
-    // Optimize CSS - disabled due to missing critters dependency
-    // optimizeCss: true,
-    // Optimize package imports
-    optimizePackageImports: [
-      '@heroicons/react',
-      'lodash',
-      '@tanstack/react-query',
-      'zustand'
-    ],
-    // Server components optimizations
-    serverComponentsExternalPackages: ['sharp'],
-  },
+  // Experimental features disabled for Vercel compatibility
+  // experimental: {
+  //   optimizePackageImports: ['@tanstack/react-query', 'zustand'],
+  //   serverComponentsExternalPackages: ['sharp'],
+  // },
   
   // Image optimization configuration
   images: {

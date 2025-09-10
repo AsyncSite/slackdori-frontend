@@ -14,8 +14,7 @@
     "url": "https://github.com/AsyncSite/slackdori-frontend/issues"
   },
   "engines": {
-    "node": ">=18.17.0",
-    "npm": ">=9.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "dev": "next dev -p 4000",
@@ -49,7 +48,6 @@
     "@vercel/analytics": "^1.1.1",
     "@vercel/speed-insights": "^1.0.2",
     "web-vitals": "^3.5.0",
-    "sharp": "^0.33.1",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
