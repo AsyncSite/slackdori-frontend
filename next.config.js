@@ -66,8 +66,8 @@ const nextConfig = {
   
   // Enable experimental features for better performance
   experimental: {
-    // Optimize CSS
-    optimizeCss: true,
+    // Optimize CSS - disabled due to missing critters dependency
+    // optimizeCss: true,
     // Optimize package imports
     optimizePackageImports: [
       '@heroicons/react',
