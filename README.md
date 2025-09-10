@@ -12,22 +12,31 @@ npm run dev     # http://localhost:4000
 ## 📁 Project Structure
 
 ```
-src/app/        # Pages
-src/components/ # Components (create as needed)
-src/lib/        # Utilities (create as needed)
+src/app/        # Pages (Next.js App Router)
+src/components/ # Reusable components
+src/lib/        # Utility functions
+public/         # Static assets
 ```
 
 ## 📚 Documentation
 
-- [CLAUDE.md](./CLAUDE.md) - Development guidelines (< 100 lines)
-- [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) - Phases and priorities
+- [CLAUDE.md](./CLAUDE.md) - Development guidelines
+- [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) - Project phases and priorities
 - [DECISIONS.md](./DECISIONS.md) - Technical decisions log
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript (Strict Mode)
+- **Styling**: Tailwind CSS
+- **Utilities**: clsx, tailwind-merge
+- **Deployment**: Vercel
 
 ## 🎯 Current Focus
 
 Building MVP with:
 1. Pack listing page
-2. Pack detail page
+2. Pack detail page  
 3. Slack OAuth integration
 4. One-click installation
 
@@ -38,6 +47,6 @@ Building MVP with:
 
 ## 💡 Philosophy
 
-> "Done is better than perfect"
+> "Build it right, ship it fast"
 
-We ship fast, measure everything, and iterate based on data.
+Balance between best practices and rapid iteration.
