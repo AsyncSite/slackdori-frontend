@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react';
 import { useParams, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { api, PackDetails } from '@/lib/api';
+import { downloadPackAsZip } from '@/lib/download';
 
 export default function PackDetailPage() {
   const params = useParams();
   const [pack, setPack] = useState<PackDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
   
   useEffect(() => {
     if (params.id) {
@@ -118,10 +120,20 @@ export default function PackDetailPage() {
                 <li>Upload each emoji image and set its name</li>
               </ol>
               <button 
-                className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors"
-                onClick={() => downloadPack(pack)}
+                className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+                onClick={async () => {
+                  setDownloading(true);
+                  try {
+                    await downloadPackAsZip(pack);
+                  } catch (error) {
+                    alert('Failed to download pack. Please try again.');
+                  } finally {
+                    setDownloading(false);
+                  }
+                }}
+                disabled={downloading}
               >
-                Download Pack (.zip)
+                {downloading ? 'Downloading...' : 'Download Pack (.zip)'}
               </button>
             </div>
           </div>
@@ -172,8 +184,3 @@ function InstallButton({ packId }: { packId: string }) {
   );
 }
 
-async function downloadPack(pack: PackDetails) {
-  // In a real implementation, this would create a ZIP file
-  // For now, we'll just alert the user
-  alert(`Download feature for &quot;${pack.name}&quot; coming soon! You can manually save the images from the grid below.`);
-}
