@@ -10,8 +10,7 @@ import type {
   SlackAuth,
   SlackWorkspace,
   InstallResult,
-  InstallJob,
-  Emoji
+  InstallJob
 } from './types';
 
 const REPO_BASE = 'https://raw.githubusercontent.com/AsyncSite/slack-emoji-packs/main';
