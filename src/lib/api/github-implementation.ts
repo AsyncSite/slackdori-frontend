@@ -47,7 +47,7 @@ export class GitHubAPI implements ISlackDoriAPI {
     try {
       const [packsResponse, detailsResponse] = await Promise.all([
         fetch(`${REPO_BASE}/packs.json`),
-        fetch(`${REPO_BASE}/packs/${packId}/pack.json`)
+        fetch(`${REPO_BASE}/images/${packId}/pack.json`)
       ]);
 
       if (!packsResponse.ok || !detailsResponse.ok) {
