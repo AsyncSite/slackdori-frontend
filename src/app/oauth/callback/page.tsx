@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 
-export default function OAuthCallbackPage() {
+function OAuthCallbackContent() {
   const params = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<'idle'|'starting'|'polling'|'completed'|'failed'>('idle');
@@ -106,5 +106,20 @@ export default function OAuthCallbackPage() {
         {status === 'idle' && <p>Preparing...</p>}
       </div>
     </div>
+  );
+}
+
+export default function OAuthCallbackPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-purple-50 to-white">
+        <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-lg text-center">
+          <h1 className="text-2xl font-bold mb-2">SlackDori Installation</h1>
+          <p>Loading...</p>
+        </div>
+      </div>
+    }>
+      <OAuthCallbackContent />
+    </Suspense>
   );
 }
