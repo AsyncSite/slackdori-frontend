@@ -253,8 +253,8 @@ export function EmojiModal({ emoji, packId, isOpen, onClose, onToast }: EmojiMod
             <ol className="text-sm text-blue-700 space-y-1">
               <li>1. Download the image or copy the code</li>
               <li>2. Go to your Slack workspace settings</li>
-              <li>3. Navigate to "Customize Workspace" → "Emoji"</li>
-              <li>4. Click "Add Custom Emoji" and upload the image</li>
+              <li>3. Navigate to &quot;Customize Workspace&quot; → &quot;Emoji&quot;</li>
+              <li>4. Click &quot;Add Custom Emoji&quot; and upload the image</li>
               <li>5. Use the emoji name: <code className="bg-blue-100 px-1 rounded">:{emoji.name}:</code></li>
             </ol>
           </div>
