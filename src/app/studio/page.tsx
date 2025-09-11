@@ -52,17 +52,18 @@ export default function StudioPage() {
     const maxLineLength = Math.max(...lines.map(line => line.length), 1);
     const lineCount = lines.length || 1;
     
-    // Single character optimization - make it bigger
+    // Single character optimization - use full slider range
     if (lineCount === 1 && maxLineLength === 1) {
-      return Math.min(baseSize * 2.2, 110);
+      // 1글자는 슬라이더 값 그대로 사용 (최대 120px까지)
+      return baseSize;
     }
     
-    // For single line, maximize size based on character count
+    // For single line, adjust based on character count
     if (lineCount === 1) {
-      if (maxLineLength <= 2) return Math.min(baseSize * 1.5, 90);
-      if (maxLineLength <= 3) return Math.min(baseSize * 1.2, 70);
-      if (maxLineLength <= 4) return Math.min(baseSize, 60);
-      return Math.min(baseSize * (4 / maxLineLength), 50);
+      if (maxLineLength <= 2) return Math.min(baseSize * 0.9, 100);
+      if (maxLineLength <= 3) return Math.min(baseSize * 0.75, 80);
+      if (maxLineLength <= 4) return Math.min(baseSize * 0.6, 70);
+      return Math.min(baseSize * (4 / maxLineLength), 60);
     }
     
     // For multiple lines, calculate based on available canvas space
