@@ -36,7 +36,6 @@ function OAuthCallbackContent() {
     const start = async () => {
       try {
         setStatus('starting');
-        // @ts-ignore - api is union type; BackendAPI expects X-Session-Id internally
         const result = await api.installPack(packId, '');
         setJobId(result.jobId);
         setStatus('polling');
@@ -54,7 +53,6 @@ function OAuthCallbackContent() {
 
     const timer = setInterval(async () => {
       try {
-        // @ts-ignore
         const s = await api.getInstallStatus(jobId);
         setProgress(s.progress || 0);
         setTotal(s.total || 0);
