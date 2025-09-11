@@ -358,8 +358,6 @@ export default function StudioPage() {
       width: 128,
       height: 128,
       workerScript: '/gif.worker.js',
-      transparent: useTransparentBg ? 0x00000000 : null,
-      background: useTransparentBg ? undefined : backgroundColor,
     });
 
     // Generate frames
