@@ -14,6 +14,8 @@ export default function StudioPage() {
   const [selectedAnimationStyle, setSelectedAnimationStyle] = useState<AnimationStyle>('bounce');
   const [selectedStaticStyle, setSelectedStaticStyle] = useState<StaticStyle>('plain');
   const [fontSize, setFontSize] = useState(32);
+  const [textColor, setTextColor] = useState('#4A154B');
+  const [useGradient, setUseGradient] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -42,6 +44,17 @@ export default function StudioPage() {
     { id: 'neon', name: 'Neon', icon: '💡' },
   ];
 
+  const presetColors = [
+    { name: 'Black', value: '#000000' },
+    { name: 'White', value: '#FFFFFF' },
+    { name: 'Purple', value: '#4A154B' },
+    { name: 'Blue', value: '#1264A3' },
+    { name: 'Red', value: '#E01E5A' },
+    { name: 'Green', value: '#2EB67D' },
+    { name: 'Yellow', value: '#FFD700' },
+    { name: 'Orange', value: '#FF6B35' },
+  ];
+
   // Preview (animated or static)
   useEffect(() => {
     if (!text || !canvasRef.current) return;
@@ -61,7 +74,14 @@ export default function StudioPage() {
 
       switch (selectedStaticStyle) {
         case 'plain':
-          ctx.fillStyle = '#4A154B';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, 64);
           break;
         
@@ -125,7 +145,14 @@ export default function StudioPage() {
       switch (selectedAnimationStyle) {
         case 'bounce':
           const bounceY = 64 + Math.sin(frame * 0.15) * 20;
-          ctx.fillStyle = '#4A154B';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, bounceY);
           break;
 
@@ -232,7 +259,7 @@ export default function StudioPage() {
         cancelAnimationFrame(animationId);
       }
     };
-  }, [text, selectedAnimationStyle, selectedStaticStyle, fontSize, outputMode]);
+  }, [text, selectedAnimationStyle, selectedStaticStyle, fontSize, outputMode, textColor, useGradient]);
 
   const generateGIF = async () => {
     if (!text || !canvasRef.current) return;
@@ -265,7 +292,14 @@ export default function StudioPage() {
       switch (selectedAnimationStyle) {
         case 'bounce':
           const bounceY = 64 + Math.sin(frame * 0.3) * 20;
-          ctx.fillStyle = '#4A154B';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, bounceY);
           break;
 
@@ -383,7 +417,14 @@ export default function StudioPage() {
 
     switch (selectedStaticStyle) {
       case 'plain':
-        ctx.fillStyle = '#4A154B';
+        if (useGradient) {
+          const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+          gradient.addColorStop(0, textColor);
+          gradient.addColorStop(1, '#FFD700');
+          ctx.fillStyle = gradient;
+        } else {
+          ctx.fillStyle = textColor;
+        }
         ctx.fillText(text, 64, 64);
         break;
       
@@ -556,10 +597,56 @@ export default function StudioPage() {
                   </div>
                 </div>
 
-                {/* Step 3: Style Selection */}
+                {/* Step 3: Choose Color */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    3. Choose {outputMode === 'animated' ? 'Animation' : 'Static'} Style
+                    3. Choose Color
+                  </label>
+                  <div className="grid grid-cols-4 gap-2 mb-3">
+                    {presetColors.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setTextColor(color.value)}
+                        className={`h-12 rounded-lg border-2 transition-all ${
+                          textColor === color.value
+                            ? 'border-slack-purple shadow-lg scale-110'
+                            : 'border-gray-300 hover:border-slack-purple'
+                        }`}
+                        style={{ backgroundColor: color.value }}
+                        title={color.name}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="color"
+                      value={textColor}
+                      onChange={(e) => setTextColor(e.target.value)}
+                      className="w-12 h-12 rounded cursor-pointer"
+                    />
+                    <input
+                      type="text"
+                      value={textColor}
+                      onChange={(e) => setTextColor(e.target.value)}
+                      placeholder="#000000"
+                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
+                    />
+                    <label className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={useGradient}
+                        onChange={(e) => setUseGradient(e.target.checked)}
+                        className="rounded"
+                      />
+                      <span className="text-sm">Gradient</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Step 4: Style Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    4. Choose {outputMode === 'animated' ? 'Animation' : 'Static'} Style
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {outputMode === 'animated' ? (
@@ -596,10 +683,10 @@ export default function StudioPage() {
                   </div>
                 </div>
 
-                {/* Step 4: Generate */}
+                {/* Step 5: Generate */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    4. Generate {outputMode === 'animated' ? 'GIF' : 'PNG'}
+                    5. Generate {outputMode === 'animated' ? 'GIF' : 'PNG'}
                   </label>
                   <button
                     onClick={outputMode === 'animated' ? generateGIF : generatePNG}
