@@ -505,52 +505,52 @@ export default function StudioPage() {
       <header className="bg-white shadow-sm">
         <div className="container py-4">
           <div className="flex items-center justify-between">
-            <Link href="/" className="text-slack-purple hover:underline">
-              ← Back to SlackDori
+            <Link href="/" className="text-slack-purple hover:underline text-sm md:text-base">
+              ← Back
             </Link>
-            <h1 className="text-2xl font-bold text-slack-purple">
+            <h1 className="text-xl md:text-2xl font-bold text-slack-purple">
               Emoji Studio
             </h1>
-            <div className="w-32"></div>
+            <div className="w-16 md:w-32"></div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <div className="container py-12">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-4xl font-bold mb-4">Create Custom Emoji</h2>
-            <p className="text-gray-600">
+      <div className="container py-6 md:py-12">
+        <div className="max-w-4xl mx-auto px-4 md:px-0">
+          <div className="text-center mb-6 md:mb-8">
+            <h2 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">Create Custom Emoji</h2>
+            <p className="text-sm md:text-base text-gray-600">
               Type your text, choose a style, and generate an animated GIF emoji
             </p>
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-white rounded-lg shadow-lg p-4 md:p-8">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
               {/* Left: Controls */}
               <div className="space-y-6">
                 {/* Mode Selection Tabs */}
                 <div className="flex rounded-lg bg-gray-100 p-1">
                   <button
                     onClick={() => setOutputMode('animated')}
-                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                    className={`flex-1 py-2 px-2 md:px-4 rounded-md font-medium text-sm md:text-base transition-all ${
                       outputMode === 'animated'
                         ? 'bg-white text-slack-purple shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
-                    🎬 Animated GIF
+                    <span className="hidden sm:inline">🎬 </span>Animated GIF
                   </button>
                   <button
                     onClick={() => setOutputMode('static')}
-                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                    className={`flex-1 py-2 px-2 md:px-4 rounded-md font-medium text-sm md:text-base transition-all ${
                       outputMode === 'static'
                         ? 'bg-white text-slack-purple shadow-sm'
                         : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
-                    🖼️ Static PNG
+                    <span className="hidden sm:inline">🖼️ </span>Static PNG
                   </button>
                 </div>
 
@@ -602,12 +602,12 @@ export default function StudioPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     3. Choose Color
                   </label>
-                  <div className="grid grid-cols-4 gap-2 mb-3">
+                  <div className="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4 gap-2 mb-3">
                     {presetColors.map((color) => (
                       <button
                         key={color.value}
                         onClick={() => setTextColor(color.value)}
-                        className={`h-12 rounded-lg border-2 transition-all ${
+                        className={`h-10 md:h-12 rounded-lg border-2 transition-all ${
                           textColor === color.value
                             ? 'border-slack-purple shadow-lg scale-110'
                             : 'border-gray-300 hover:border-slack-purple'
@@ -617,20 +617,22 @@ export default function StudioPage() {
                       />
                     ))}
                   </div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="color"
-                      value={textColor}
-                      onChange={(e) => setTextColor(e.target.value)}
-                      className="w-12 h-12 rounded cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={textColor}
-                      onChange={(e) => setTextColor(e.target.value)}
-                      placeholder="#000000"
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
-                    />
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <input
+                        type="color"
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                        className="w-10 h-10 md:w-12 md:h-12 rounded cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={textColor}
+                        onChange={(e) => setTextColor(e.target.value)}
+                        placeholder="#000000"
+                        className="flex-1 sm:w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm md:text-base"
+                      />
+                    </div>
                     <label className="flex items-center gap-2">
                       <input
                         type="checkbox"
@@ -748,9 +750,9 @@ export default function StudioPage() {
           </div>
 
           {/* Tips Section */}
-          <div className="mt-8 bg-blue-50 rounded-lg p-6">
+          <div className="mt-6 md:mt-8 bg-blue-50 rounded-lg p-4 md:p-6">
             <h3 className="font-semibold text-blue-900 mb-2">💡 Pro Tips</h3>
-            <ul className="text-sm text-blue-800 space-y-1">
+            <ul className="text-xs md:text-sm text-blue-800 space-y-1">
               <li>• Keep text short (2-4 characters) for best visibility</li>
               <li>• Emojis work great! Try mixing text with emoji characters</li>
               <li>• Korean, Japanese, and special characters are supported</li>
