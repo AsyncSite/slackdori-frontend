@@ -167,15 +167,18 @@ function PackCard({ pack }: { pack: EmojiPack }) {
       <div className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow p-6 cursor-pointer">
         {/* Preview Emojis */}
         <div className="flex gap-2 mb-4">
-          {pack.preview.slice(0, 4).map((emojiName: string) => (
-            <img
-              key={emojiName}
-              src={`${REPO_BASE}/images/${pack.id}/${emojiName}.png`}
-              alt={emojiName}
-              className="w-12 h-12"
-              loading="lazy"
-            />
-          ))}
+          {pack.preview.slice(0, 4).map((emojiFile: string) => {
+            const emojiName = emojiFile.replace(/\.(png|gif)$/, '');
+            return (
+              <img
+                key={emojiFile}
+                src={`${REPO_BASE}/images/${pack.id}/${emojiFile}`}
+                alt={emojiName}
+                className="w-12 h-12"
+                loading="lazy"
+              />
+            );
+          })}
         </div>
         
         {/* Pack Info */}

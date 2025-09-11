@@ -115,30 +115,18 @@ export default function HomePage() {
                   {pack.description}
                 </p>
                 <div className="flex gap-2 mb-4 items-center">
-                  {pack.preview.slice(0, 4).map(emojiName => {
-                    const imgSrc = `${REPO_BASE}/images/${pack.id}/${emojiName}`;
-                    // Default to PNG for most emojis, only use GIF for known animated ones
-                    const isLikelyGif = emojiName.includes('loading') || emojiName.includes('spinner') || 
-                                        emojiName.includes('party') || emojiName.includes('parrot') ||
-                                        emojiName.includes('rocket_launch');
-                    const initialExt = isLikelyGif ? '.gif' : '.png';
-                    const fallbackExt = isLikelyGif ? '.png' : '.gif';
+                  {pack.preview.slice(0, 4).map(emojiFile => {
+                    // Preview now includes file extension
+                    const imgSrc = `${REPO_BASE}/images/${pack.id}/${emojiFile}`;
+                    const emojiName = emojiFile.replace(/\.(png|gif)$/, '');
                     
                     return (
                       <img
-                        key={emojiName}
-                        src={`${imgSrc}${initialExt}`}
+                        key={emojiFile}
+                        src={imgSrc}
                         alt={emojiName}
                         className="w-10 h-10"
                         loading="lazy"
-                        onError={(e) => {
-                          // Try the other format if first one fails
-                          const target = e.target as HTMLImageElement;
-                          if (!target.dataset.fallbackTried) {
-                            target.dataset.fallbackTried = 'true';
-                            target.src = `${imgSrc}${fallbackExt}`;
-                          }
-                        }}
                       />
                     );
                   })}
