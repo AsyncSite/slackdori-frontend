@@ -13,7 +13,7 @@ export default function StudioPage() {
   const [outputMode, setOutputMode] = useState<OutputMode>('animated');
   const [selectedAnimationStyle, setSelectedAnimationStyle] = useState<AnimationStyle>('bounce');
   const [selectedStaticStyle, setSelectedStaticStyle] = useState<StaticStyle>('plain');
-  const [fontSize, setFontSize] = useState(32);
+  const [fontSize, setFontSize] = useState(48);
   const [textColor, setTextColor] = useState('#4A154B');
   const [useGradient, setUseGradient] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
@@ -54,23 +54,41 @@ export default function StudioPage() {
     
     // Single character optimization - make it bigger
     if (lineCount === 1 && maxLineLength === 1) {
-      return Math.min(baseSize * 1.8, 96);
+      return Math.min(baseSize * 2.2, 110);
     }
     
-    // Auto-adjust based on text length and lines
-    let adjustedSize = baseSize;
-    
-    // Adjust for line count
-    if (lineCount > 1) {
-      adjustedSize = baseSize / (1 + (lineCount - 1) * 0.3);
+    // For single line, maximize size based on character count
+    if (lineCount === 1) {
+      if (maxLineLength <= 2) return Math.min(baseSize * 1.5, 90);
+      if (maxLineLength <= 3) return Math.min(baseSize * 1.2, 70);
+      if (maxLineLength <= 4) return Math.min(baseSize, 60);
+      return Math.min(baseSize * (4 / maxLineLength), 50);
     }
     
-    // Adjust for line length
+    // For multiple lines, calculate based on available canvas space
+    const canvasHeight = 128;
+    const verticalPadding = 10; // Top and bottom padding
+    const availableHeight = canvasHeight - verticalPadding;
+    
+    // Use minimal line spacing
+    const minLineSpacing = 4; // Very tight spacing between lines
+    const totalSpacing = minLineSpacing * (lineCount - 1);
+    
+    // Calculate max font size that fits
+    const maxFontSize = (availableHeight - totalSpacing) / lineCount;
+    
+    // Also consider horizontal constraints
+    let horizontalLimit = baseSize;
     if (maxLineLength > 4) {
-      adjustedSize = adjustedSize * (4 / maxLineLength);
+      horizontalLimit = baseSize * (4 / maxLineLength);
+    } else if (maxLineLength <= 2) {
+      horizontalLimit = baseSize * 1.3;
     }
     
-    return Math.max(Math.min(adjustedSize, 120), 16);
+    // Use the smaller of vertical and horizontal limits
+    const finalSize = Math.min(maxFontSize, horizontalLimit, baseSize * 1.2);
+    
+    return Math.max(Math.min(finalSize, 120), 16);
   };
   
   // Helper function to render multi-line text
@@ -86,9 +104,11 @@ export default function StudioPage() {
     const lines = text.split('\n').filter(line => line.trim());
     if (lines.length === 0) return;
     
-    const lineHeight = actualFontSize * 1.2;
-    const totalHeight = lineHeight * (lines.length - 1);
-    const startY = y - totalHeight / 2;
+    // Use tight line spacing for better space utilization
+    const lineSpacing = Math.min(actualFontSize * 0.2, 8); // Much tighter spacing
+    const lineHeight = actualFontSize + lineSpacing;
+    const totalHeight = actualFontSize * lines.length + lineSpacing * (lines.length - 1);
+    const startY = y - totalHeight / 2 + actualFontSize / 2;
     
     lines.forEach((line, index) => {
       const lineY = startY + (index * lineHeight);
