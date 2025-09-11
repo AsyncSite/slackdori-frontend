@@ -352,6 +352,7 @@ export default function StudioPage() {
     if (!ctx) return;
 
     // Create GIF encoder
+    // Note: GIF format doesn't support true transparency, only single-color transparency
     const gif = new GIF({
       workers: 2,
       quality: 10,
@@ -365,11 +366,9 @@ export default function StudioPage() {
     for (let frame = 0; frame < totalFrames; frame++) {
       ctx.clearRect(0, 0, 128, 128);
       
-      // Draw background if not transparent
-      if (!useTransparentBg) {
-        ctx.fillStyle = backgroundColor;
-        ctx.fillRect(0, 0, 128, 128);
-      }
+      // Always draw a background for GIF (transparency doesn't work well)
+      ctx.fillStyle = useTransparentBg ? '#FFFFFF' : backgroundColor;
+      ctx.fillRect(0, 0, 128, 128);
       
       ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
