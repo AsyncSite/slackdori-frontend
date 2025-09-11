@@ -720,13 +720,26 @@ export default function StudioPage() {
                   Live Preview
                 </label>
                 <div className="bg-gray-100 rounded-lg p-8">
-                  <canvas
-                    ref={canvasRef}
-                    width={128}
-                    height={128}
-                    className="bg-white rounded shadow-md"
-                    style={{ imageRendering: 'pixelated' }}
-                  />
+                  <div className="relative inline-block">
+                    <div 
+                      className="absolute inset-0 rounded"
+                      style={{
+                        backgroundImage: `linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+                                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+                                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+                                        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)`,
+                        backgroundSize: '8px 8px',
+                        backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0px'
+                      }}
+                    />
+                    <canvas
+                      ref={canvasRef}
+                      width={128}
+                      height={128}
+                      className="relative rounded shadow-md"
+                      style={{ imageRendering: 'pixelated' }}
+                    />
+                  </div>
                 </div>
                 <p className="mt-4 text-sm text-gray-500">
                   128x128px - Slack Emoji Size
