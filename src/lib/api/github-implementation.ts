@@ -61,10 +61,20 @@ export class GitHubAPI implements ISlackDoriAPI {
       if (!packMeta) return null;
 
       // Transform image URLs to use GitHub raw content
-      const emojisWithFullUrls = packDetails.emojis.map((emoji: Emoji) => ({
-        ...emoji,
-        imageUrl: `${REPO_BASE}${emoji.imageUrl}`
-      }));
+      const emojisWithFullUrls = packDetails.emojis.map((emoji: any) => {
+        // Handle both string array and object array formats
+        if (typeof emoji === 'string') {
+          return {
+            name: emoji.replace(/\.(png|gif)$/, ''),
+            imageUrl: `${REPO_BASE}/images/${packId}/${emoji}`
+          };
+        }
+        // Already an object with imageUrl
+        return {
+          ...emoji,
+          imageUrl: `${REPO_BASE}${emoji.imageUrl}`
+        };
+      });
 
       return {
         ...packMeta,
