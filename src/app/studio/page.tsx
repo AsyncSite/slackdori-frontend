@@ -663,15 +663,14 @@ export default function StudioPage() {
     <main className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
       {/* Header */}
       <header className="bg-white shadow-sm">
-        <div className="container py-4">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="text-slack-purple hover:underline text-sm md:text-base">
-              ← Back
+              ← Back to Home
             </Link>
-            <h1 className="text-xl md:text-2xl font-bold text-slack-purple">
-              Emoji Studio
-            </h1>
-            <div className="w-16 md:w-32"></div>
+            <Link href="/packs" className="text-slack-purple hover:underline text-sm md:text-base">
+              Browse Packs →
+            </Link>
           </div>
         </div>
       </header>
