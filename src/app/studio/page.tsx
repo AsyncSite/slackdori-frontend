@@ -739,7 +739,11 @@ export default function StudioPage() {
                 {/* Mode Selection Tabs */}
                 <div className="flex rounded-lg bg-gray-100 p-1">
                   <button
-                    onClick={() => setOutputMode('animated')}
+                    onClick={() => {
+                      setOutputMode('animated');
+                      // GIF doesn't support transparency, so disable it
+                      setUseTransparentBg(false);
+                    }}
                     className={`flex-1 py-2 px-2 md:px-4 rounded-md font-medium text-sm md:text-base transition-all ${
                       outputMode === 'animated'
                         ? 'bg-white text-slack-purple shadow-sm'
@@ -860,16 +864,19 @@ export default function StudioPage() {
                       4. Background
                     </label>
                     <div className="mb-3">
-                      <label className="flex items-center gap-2 mb-3">
-                        <input
-                          type="checkbox"
-                          checked={useTransparentBg}
-                          onChange={(e) => setUseTransparentBg(e.target.checked)}
-                          className="rounded"
-                        />
-                        <span className="text-sm">Transparent Background</span>
-                      </label>
-                      {!useTransparentBg && (
+                      {/* Only show transparent option for PNG (static) mode */}
+                      {outputMode === 'static' && (
+                        <label className="flex items-center gap-2 mb-3">
+                          <input
+                            type="checkbox"
+                            checked={useTransparentBg}
+                            onChange={(e) => setUseTransparentBg(e.target.checked)}
+                            className="rounded"
+                          />
+                          <span className="text-sm">Transparent Background</span>
+                        </label>
+                      )}
+                      {(!useTransparentBg || outputMode === 'animated') && (
                         <>
                           <div className="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4 gap-2 mb-3">
                             {presetColors.map((color) => (
