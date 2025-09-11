@@ -46,6 +46,66 @@ export default function StudioPage() {
     { id: 'neon', name: 'Neon', icon: '💡' },
   ];
 
+  // Helper function to get optimal font size based on text
+  const getOptimalFontSize = (text: string, baseSize: number): number => {
+    const lines = text.split('\n').filter(line => line.trim());
+    const maxLineLength = Math.max(...lines.map(line => line.length), 1);
+    const lineCount = lines.length || 1;
+    
+    // Single character optimization - make it bigger
+    if (lineCount === 1 && maxLineLength === 1) {
+      return Math.min(baseSize * 1.8, 96);
+    }
+    
+    // Auto-adjust based on text length and lines
+    let adjustedSize = baseSize;
+    
+    // Adjust for line count
+    if (lineCount > 1) {
+      adjustedSize = baseSize / (1 + (lineCount - 1) * 0.3);
+    }
+    
+    // Adjust for line length
+    if (maxLineLength > 4) {
+      adjustedSize = adjustedSize * (4 / maxLineLength);
+    }
+    
+    return Math.max(Math.min(adjustedSize, 120), 16);
+  };
+  
+  // Helper function to render multi-line text
+  const renderMultilineText = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    actualFontSize: number,
+    color: string | CanvasGradient,
+    isGradient: boolean = false
+  ) => {
+    const lines = text.split('\n').filter(line => line.trim());
+    if (lines.length === 0) return;
+    
+    const lineHeight = actualFontSize * 1.2;
+    const totalHeight = lineHeight * (lines.length - 1);
+    const startY = y - totalHeight / 2;
+    
+    lines.forEach((line, index) => {
+      const lineY = startY + (index * lineHeight);
+      
+      if (isGradient && typeof color === 'string') {
+        const gradient = ctx.createLinearGradient(0, lineY - actualFontSize/2, 128, lineY + actualFontSize/2);
+        gradient.addColorStop(0, color);
+        gradient.addColorStop(1, '#FFD700');
+        ctx.fillStyle = gradient;
+      } else {
+        ctx.fillStyle = color;
+      }
+      
+      ctx.fillText(line.trim(), x, lineY);
+    });
+  };
+
   const presetColors = [
     { name: 'Black', value: '#000000' },
     { name: 'White', value: '#FFFFFF' },
@@ -77,21 +137,14 @@ export default function StudioPage() {
         ctx.fillRect(0, 0, 128, 128);
       }
       
-      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+      const optimalSize = getOptimalFontSize(text, fontSize);
+      ctx.font = `bold ${optimalSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
       switch (selectedStaticStyle) {
         case 'plain':
-          if (useGradient) {
-            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
-            gradient.addColorStop(0, textColor);
-            gradient.addColorStop(1, '#FFD700');
-            ctx.fillStyle = gradient;
-          } else {
-            ctx.fillStyle = textColor;
-          }
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
           break;
         
         case 'shadow':
@@ -107,7 +160,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
           ctx.shadowBlur = 0;
           break;
         
@@ -117,7 +170,7 @@ export default function StudioPage() {
           ctx.strokeText(text, 64, 64);
           // Fill with contrasting color (white or black based on background)
           ctx.fillStyle = useTransparentBg ? textColor : '#FFFFFF';
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, useTransparentBg ? textColor : '#FFFFFF', false);
           break;
         
         case 'gradient':
@@ -127,15 +180,15 @@ export default function StudioPage() {
           gradient.addColorStop(0.5, useGradient ? '#FFD700' : textColor);
           gradient.addColorStop(1, useGradient ? '#FF6B35' : textColor);
           ctx.fillStyle = gradient;
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, useTransparentBg ? textColor : '#FFFFFF', false);
           break;
         
         case '3d':
           // 3D effect with multiple layers
           ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-          ctx.fillText(text, 66, 66);
+          renderMultilineText(ctx, text, 66, 66, optimalSize, 'rgba(0, 0, 0, 0.3)', false);
           ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-          ctx.fillText(text, 65, 65);
+          renderMultilineText(ctx, text, 65, 65, optimalSize, 'rgba(0, 0, 0, 0.2)', false);
           if (useGradient) {
             const gradient = ctx.createLinearGradient(0, 0, 128, 128);
             gradient.addColorStop(0, textColor);
@@ -144,7 +197,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, useTransparentBg ? textColor : '#FFFFFF', false);
           break;
         
         case 'neon':
@@ -154,7 +207,7 @@ export default function StudioPage() {
           ctx.lineWidth = 2;
           ctx.strokeText(text, 64, 64);
           ctx.fillStyle = '#FFFFFF';
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
           ctx.shadowBlur = 0;
           break;
       }
@@ -169,7 +222,8 @@ export default function StudioPage() {
         ctx.fillRect(0, 0, 128, 128);
       }
       
-      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+      const optimalSize = getOptimalFontSize(text, fontSize);
+      ctx.font = `bold ${optimalSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -185,7 +239,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, bounceY);
+          renderMultilineText(ctx, text, 64, bounceY, optimalSize, textColor, useGradient);
           break;
 
         case 'spin':
@@ -200,14 +254,14 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
 
         case 'rainbow':
           const hue = (frame * 5) % 360;
           ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, useTransparentBg ? textColor : '#FFFFFF', false);
           break;
 
         case 'shake':
@@ -220,7 +274,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, shakeX, 64);
+          renderMultilineText(ctx, text, shakeX, 64, optimalSize, textColor, useGradient);
           break;
 
         case 'fade':
@@ -234,7 +288,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, false);
           ctx.globalAlpha = 1;
           break;
 
@@ -251,7 +305,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
 
@@ -268,7 +322,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
 
@@ -282,9 +336,9 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64 + Math.random() * 4 - 2, 64);
+          renderMultilineText(ctx, text, 64 + Math.random() * 4 - 2, 64, optimalSize, textColor, useGradient);
           ctx.globalAlpha = 0.5;
-          ctx.fillText(text, 64 + Math.random() * 4 - 2, 64 + Math.random() * 2 - 1);
+          renderMultilineText(ctx, text, 64 + Math.random() * 4 - 2, 64 + Math.random() * 2 - 1, optimalSize, textColor, useGradient);
           ctx.globalAlpha = 1;
           break;
 
@@ -299,7 +353,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, waveY);
+          renderMultilineText(ctx, text, 64, waveY, optimalSize, textColor, useGradient);
           break;
 
         case 'glow':
@@ -315,7 +369,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
           ctx.shadowBlur = 0;
           break;
 
@@ -333,7 +387,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
       }
@@ -386,7 +440,8 @@ export default function StudioPage() {
       ctx.fillStyle = useTransparentBg ? '#FFFFFF' : backgroundColor;
       ctx.fillRect(0, 0, 128, 128);
       
-      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+      const optimalSize = getOptimalFontSize(text, fontSize);
+      ctx.font = `bold ${optimalSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -402,7 +457,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, bounceY);
+          renderMultilineText(ctx, text, 64, bounceY, optimalSize, textColor, useGradient);
           break;
 
         case 'spin':
@@ -417,14 +472,14 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
 
         case 'rainbow':
           const hue = (frame * 18) % 360;
           ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, useTransparentBg ? textColor : '#FFFFFF', false);
           break;
 
         case 'shake':
@@ -437,7 +492,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, shakeX, 64);
+          renderMultilineText(ctx, text, shakeX, 64, optimalSize, textColor, useGradient);
           break;
 
         case 'fade':
@@ -451,7 +506,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, false);
           ctx.globalAlpha = 1;
           break;
 
@@ -468,7 +523,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
 
@@ -485,7 +540,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
 
@@ -498,9 +553,9 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64 + (frame % 10 < 5 ? 2 : -2), 64);
+          renderMultilineText(ctx, text, 64 + (frame % 10 < 5 ? 2 : -2), 64, optimalSize, textColor, useGradient);
           ctx.globalAlpha = 0.5;
-          ctx.fillText(text, 64 + (frame % 10 < 5 ? -2 : 2), 64 + 1);
+          renderMultilineText(ctx, text, 64 + (frame % 10 < 5 ? -2 : 2), 64 + 1, optimalSize, textColor, useGradient);
           ctx.globalAlpha = 1;
           break;
 
@@ -514,7 +569,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, waveY);
+          renderMultilineText(ctx, text, 64, waveY, optimalSize, textColor, useGradient);
           break;
 
         case 'glow':
@@ -529,7 +584,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 64, 64);
+          renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
           ctx.shadowBlur = 0;
           break;
 
@@ -546,7 +601,7 @@ export default function StudioPage() {
           } else {
             ctx.fillStyle = textColor;
           }
-          ctx.fillText(text, 0, 0);
+          renderMultilineText(ctx, text, 0, 0, optimalSize, textColor, useGradient);
           ctx.restore();
           break;
       }
@@ -584,7 +639,8 @@ export default function StudioPage() {
       ctx.fillRect(0, 0, 128, 128);
     }
     
-    ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+    const optimalSize = getOptimalFontSize(text, fontSize);
+    ctx.font = `bold ${optimalSize}px system-ui, -apple-system, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
@@ -598,7 +654,7 @@ export default function StudioPage() {
         } else {
           ctx.fillStyle = textColor;
         }
-        ctx.fillText(text, 64, 64);
+        renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
         break;
       
       case 'shadow':
@@ -614,7 +670,7 @@ export default function StudioPage() {
         } else {
           ctx.fillStyle = textColor;
         }
-        ctx.fillText(text, 64, 64);
+        renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
         ctx.shadowBlur = 0;
         break;
       
@@ -624,7 +680,7 @@ export default function StudioPage() {
         ctx.strokeText(text, 64, 64);
         // Fill with contrasting color (white or black based on background)
         ctx.fillStyle = useTransparentBg ? textColor : '#FFFFFF';
-        ctx.fillText(text, 64, 64);
+        renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
         break;
       
       case 'gradient':
@@ -634,14 +690,14 @@ export default function StudioPage() {
         gradient.addColorStop(0.5, useGradient ? '#FFD700' : textColor);
         gradient.addColorStop(1, useGradient ? '#FF6B35' : textColor);
         ctx.fillStyle = gradient;
-        ctx.fillText(text, 64, 64);
+        renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
         break;
       
       case '3d':
         ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        ctx.fillText(text, 66, 66);
+        renderMultilineText(ctx, text, 66, 66, optimalSize, 'rgba(0, 0, 0, 0.3)', false);
         ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.fillText(text, 65, 65);
+        renderMultilineText(ctx, text, 65, 65, optimalSize, 'rgba(0, 0, 0, 0.2)', false);
         if (useGradient) {
           const gradient = ctx.createLinearGradient(0, 0, 128, 128);
           gradient.addColorStop(0, textColor);
@@ -650,7 +706,7 @@ export default function StudioPage() {
         } else {
           ctx.fillStyle = textColor;
         }
-        ctx.fillText(text, 64, 64);
+        renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
         break;
       
       case 'neon':
@@ -660,7 +716,7 @@ export default function StudioPage() {
         ctx.lineWidth = 2;
         ctx.strokeText(text, 64, 64);
         ctx.fillStyle = '#FFFFFF';
-        ctx.fillText(text, 64, 64);
+        renderMultilineText(ctx, text, 64, 64, optimalSize, textColor, useGradient);
         ctx.shadowBlur = 0;
         break;
     }
@@ -769,16 +825,20 @@ export default function StudioPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     1. Enter Your Text
                   </label>
-                  <input
-                    type="text"
+                  <textarea
                     value={text}
-                    onChange={(e) => setText(e.target.value.slice(0, 8))}
-                    placeholder="Type here... (e.g., 🎉, WOW, 대박)"
-                    maxLength={8}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slack-purple focus:border-transparent"
+                    onChange={(e) => {
+                      const lines = e.target.value.split('\n');
+                      // Limit to 3 lines and 6 characters per line
+                      const limitedLines = lines.slice(0, 3).map(line => line.slice(0, 6));
+                      setText(limitedLines.join('\n'));
+                    }}
+                    placeholder="Type here... (Enter for new line)&#10;예: 대박&#10;    진짜"
+                    rows={3}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slack-purple focus:border-transparent resize-none font-mono"
                   />
                   <p className="mt-1 text-sm text-gray-500">
-                    {text.length}/8 characters
+                    {text.split('\n').filter(l => l).length} lines, {text.replace(/\n/g, '').length} total chars
                   </p>
                 </div>
 
