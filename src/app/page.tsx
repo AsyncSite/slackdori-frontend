@@ -38,18 +38,20 @@ export default function HomePage() {
               One-Click Slack Emoji Pack Installation
             </h1>
             <p className="text-xl mb-8 opacity-90">
-              Transform your Slack workspace with curated emoji packs. 
+              Transform your Slack workspace with curated emoji packs.<br />
               No more adding emojis one by one.
             </p>
-            <div className="flex gap-4 justify-center mb-8">
-              <Link href="/packs" className="btn-secondary">
-                Browse {packs.length} Emoji Packs
-              </Link>
-              <Link href="/studio" className="btn-secondary">
-                ✨ Create Your Own
-              </Link>
-              <Link href="#how-it-works" className="bg-white text-slack-purple px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-200">
-                How It Works
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+              <div className="flex gap-4">
+                <Link href="/packs" className="btn-secondary">
+                  Browse {packs.length} Emoji Packs
+                </Link>
+                <Link href="/studio" className="btn-secondary">
+                  ✨ Create Your Own
+                </Link>
+              </div>
+              <Link href="#how-it-works" className="text-white/80 hover:text-white underline text-sm transition-all duration-200">
+                Learn how it works →
               </Link>
             </div>
             <div className="flex gap-6 justify-center text-sm">
