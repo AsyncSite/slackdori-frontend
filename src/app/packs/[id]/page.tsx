@@ -61,8 +61,8 @@ export default function PackDetailPage() {
             </span>
           </div>
           
-          {/* Install Button */}
-          <InstallButton packId={pack.id} />
+          {/* Download Button */}
+          <DownloadButton pack={pack} />
         </div>
       </div>
       
@@ -98,29 +98,12 @@ export default function PackDetailPage() {
           
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold mb-3">Option 1: One-Click Install (Coming Soon)</h3>
+              <h3 className="text-lg font-semibold mb-3">Option 1: Download and Install</h3>
               <p className="text-gray-600 mb-3">
-                We&apos;re working on automatic installation. Soon you&apos;ll be able to install all emojis with just one click!
+                Download all emojis as a ZIP file and install them to your Slack workspace.
               </p>
               <button 
-                className="bg-gray-300 text-gray-500 px-6 py-3 rounded-lg cursor-not-allowed"
-                disabled
-              >
-                Coming Soon
-              </button>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Option 2: Manual Installation</h3>
-              <ol className="list-decimal list-inside space-y-2 text-gray-600">
-                <li>Download the emoji pack as a ZIP file</li>
-                <li>Go to your Slack workspace</li>
-                <li>Navigate to Settings → Customize Workspace → Emoji</li>
-                <li>Click &quot;Add Custom Emoji&quot;</li>
-                <li>Upload each emoji image and set its name</li>
-              </ol>
-              <button 
-                className="mt-4 bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+                className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
                 onClick={async () => {
                   setDownloading(true);
                   try {
@@ -133,8 +116,24 @@ export default function PackDetailPage() {
                 }}
                 disabled={downloading}
               >
-                {downloading ? 'Downloading...' : 'Download Pack (.zip)'}
+                {downloading ? 'Downloading...' : '📦 Download Pack (.zip)'}
               </button>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Option 2: Installation Steps</h3>
+              <ol className="list-decimal list-inside space-y-2 text-gray-600">
+                <li>After downloading, extract the ZIP file</li>
+                <li>Go to your Slack workspace</li>
+                <li>Navigate to Settings → Customize Workspace → Emoji</li>
+                <li>Click &quot;Add Custom Emoji&quot;</li>
+                <li>Upload each emoji image and set its name (name is included in filename)</li>
+              </ol>
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>💡 Pro Tip:</strong> Use a browser extension like &quot;Slack Custom Emoji Manager&quot; for bulk uploads!
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -159,27 +158,36 @@ export default function PackDetailPage() {
   );
 }
 
-function InstallButton({ packId }: { packId: string }) {
+function DownloadButton({ pack }: { pack: PackDetails }) {
+  const [downloading, setDownloading] = useState(false);
+  
   return (
     <div className="flex gap-4">
       <button 
-        className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold hover:bg-purple-50 transition-colors"
-        onClick={() => {
-          // Redirect to backend OAuth endpoint through Gateway
-          const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-          window.location.href = `${backendUrl}/api/public/slack-emoji/v1/slack/auth?packId=${packId}`;
+        className="bg-white text-purple-600 px-8 py-4 rounded-lg font-semibold hover:bg-purple-50 transition-colors disabled:bg-gray-300 disabled:text-gray-500"
+        onClick={async () => {
+          setDownloading(true);
+          try {
+            await downloadPackAsZip(pack);
+          } catch (error) {
+            alert('Failed to download pack. Please try again.');
+          } finally {
+            setDownloading(false);
+          }
         }}
+        disabled={downloading}
       >
-        Install to Slack
+        {downloading ? 'Preparing Download...' : '📦 Download Emoji Pack'}
       </button>
       <button 
         className="bg-white/20 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/30 transition-colors"
         onClick={() => {
-          // Add to favorites (will use packId when backend is ready)
-          alert(`Added ${packId} to favorites!`);
+          // Copy pack link to clipboard
+          navigator.clipboard.writeText(window.location.href);
+          alert('Pack link copied to clipboard!');
         }}
       >
-        ⭐ Save Pack
+        📋 Copy Link
       </button>
     </div>
   );
