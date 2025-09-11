@@ -5,17 +5,21 @@ import Link from 'next/link';
 import GIF from 'gif.js';
 
 type AnimationStyle = 'bounce' | 'spin' | 'rainbow' | 'shake' | 'fade' | 'zoom' | 'pulse' | 'glitch' | 'wave' | 'glow' | 'flip';
+type StaticStyle = 'plain' | 'shadow' | 'outline' | 'gradient' | '3d' | 'neon';
+type OutputMode = 'animated' | 'static';
 
 export default function StudioPage() {
   const [text, setText] = useState('');
-  const [selectedStyle, setSelectedStyle] = useState<AnimationStyle>('bounce');
+  const [outputMode, setOutputMode] = useState<OutputMode>('animated');
+  const [selectedAnimationStyle, setSelectedAnimationStyle] = useState<AnimationStyle>('bounce');
+  const [selectedStaticStyle, setSelectedStaticStyle] = useState<StaticStyle>('plain');
   const [fontSize, setFontSize] = useState(32);
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationFrameRef = useRef<number>(0);
 
-  const styles: { id: AnimationStyle; name: string; icon: string }[] = [
+  const animationStyles: { id: AnimationStyle; name: string; icon: string }[] = [
     { id: 'bounce', name: 'Bounce', icon: '🏀' },
     { id: 'spin', name: 'Spin', icon: '🔄' },
     { id: 'rainbow', name: 'Rainbow', icon: '🌈' },
@@ -29,7 +33,16 @@ export default function StudioPage() {
     { id: 'flip', name: 'Flip', icon: '🔃' },
   ];
 
-  // Animation preview
+  const staticStyles: { id: StaticStyle; name: string; icon: string }[] = [
+    { id: 'plain', name: 'Plain', icon: '📝' },
+    { id: 'shadow', name: 'Shadow', icon: '🌑' },
+    { id: 'outline', name: 'Outline', icon: '⭕' },
+    { id: 'gradient', name: 'Gradient', icon: '🎨' },
+    { id: '3d', name: '3D', icon: '📦' },
+    { id: 'neon', name: 'Neon', icon: '💡' },
+  ];
+
+  // Preview (animated or static)
   useEffect(() => {
     if (!text || !canvasRef.current) return;
 
@@ -40,6 +53,68 @@ export default function StudioPage() {
     let frame = 0;
     let animationId: number;
 
+    const drawStatic = () => {
+      ctx.clearRect(0, 0, 128, 128);
+      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      switch (selectedStaticStyle) {
+        case 'plain':
+          ctx.fillStyle = '#4A154B';
+          ctx.fillText(text, 64, 64);
+          break;
+        
+        case 'shadow':
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+          ctx.shadowBlur = 8;
+          ctx.shadowOffsetX = 3;
+          ctx.shadowOffsetY = 3;
+          ctx.fillStyle = '#1264A3';
+          ctx.fillText(text, 64, 64);
+          ctx.shadowBlur = 0;
+          break;
+        
+        case 'outline':
+          ctx.strokeStyle = '#E01E5A';
+          ctx.lineWidth = 3;
+          ctx.strokeText(text, 64, 64);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillText(text, 64, 64);
+          break;
+        
+        case 'gradient':
+          const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+          gradient.addColorStop(0, '#FF6B6B');
+          gradient.addColorStop(0.5, '#4ECDC4');
+          gradient.addColorStop(1, '#45B7D1');
+          ctx.fillStyle = gradient;
+          ctx.fillText(text, 64, 64);
+          break;
+        
+        case '3d':
+          // 3D effect with multiple layers
+          ctx.fillStyle = '#888';
+          ctx.fillText(text, 66, 66);
+          ctx.fillStyle = '#666';
+          ctx.fillText(text, 65, 65);
+          ctx.fillStyle = '#2EB67D';
+          ctx.fillText(text, 64, 64);
+          break;
+        
+        case 'neon':
+          ctx.shadowColor = '#FF00FF';
+          ctx.shadowBlur = 20;
+          ctx.strokeStyle = '#FF00FF';
+          ctx.lineWidth = 2;
+          ctx.strokeText(text, 64, 64);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillText(text, 64, 64);
+          ctx.shadowBlur = 0;
+          break;
+      }
+    };
+
     const animate = () => {
       ctx.clearRect(0, 0, 128, 128);
       ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
@@ -47,7 +122,7 @@ export default function StudioPage() {
       ctx.textBaseline = 'middle';
 
       // Apply animation based on selected style
-      switch (selectedStyle) {
+      switch (selectedAnimationStyle) {
         case 'bounce':
           const bounceY = 64 + Math.sin(frame * 0.15) * 20;
           ctx.fillStyle = '#4A154B';
@@ -145,12 +220,19 @@ export default function StudioPage() {
       animationId = requestAnimationFrame(animate);
     };
 
-    animate();
+    // Run appropriate preview based on mode
+    if (outputMode === 'static') {
+      drawStatic();
+    } else {
+      animate();
+    }
 
     return () => {
-      cancelAnimationFrame(animationId);
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
     };
-  }, [text, selectedStyle, fontSize]);
+  }, [text, selectedAnimationStyle, selectedStaticStyle, fontSize, outputMode]);
 
   const generateGIF = async () => {
     if (!text || !canvasRef.current) return;
@@ -283,12 +365,94 @@ export default function StudioPage() {
     gif.render();
   };
 
-  const downloadGIF = () => {
+  const generatePNG = () => {
+    if (!text || !canvasRef.current) return;
+
+    setIsGenerating(true);
+    setDownloadUrl(null);
+
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Draw the static style one more time
+    ctx.clearRect(0, 0, 128, 128);
+    ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    switch (selectedStaticStyle) {
+      case 'plain':
+        ctx.fillStyle = '#4A154B';
+        ctx.fillText(text, 64, 64);
+        break;
+      
+      case 'shadow':
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetX = 3;
+        ctx.shadowOffsetY = 3;
+        ctx.fillStyle = '#1264A3';
+        ctx.fillText(text, 64, 64);
+        ctx.shadowBlur = 0;
+        break;
+      
+      case 'outline':
+        ctx.strokeStyle = '#E01E5A';
+        ctx.lineWidth = 3;
+        ctx.strokeText(text, 64, 64);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(text, 64, 64);
+        break;
+      
+      case 'gradient':
+        const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+        gradient.addColorStop(0, '#FF6B6B');
+        gradient.addColorStop(0.5, '#4ECDC4');
+        gradient.addColorStop(1, '#45B7D1');
+        ctx.fillStyle = gradient;
+        ctx.fillText(text, 64, 64);
+        break;
+      
+      case '3d':
+        ctx.fillStyle = '#888';
+        ctx.fillText(text, 66, 66);
+        ctx.fillStyle = '#666';
+        ctx.fillText(text, 65, 65);
+        ctx.fillStyle = '#2EB67D';
+        ctx.fillText(text, 64, 64);
+        break;
+      
+      case 'neon':
+        ctx.shadowColor = '#FF00FF';
+        ctx.shadowBlur = 20;
+        ctx.strokeStyle = '#FF00FF';
+        ctx.lineWidth = 2;
+        ctx.strokeText(text, 64, 64);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillText(text, 64, 64);
+        ctx.shadowBlur = 0;
+        break;
+    }
+
+    // Convert canvas to PNG
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        setDownloadUrl(url);
+        setIsGenerating(false);
+      }
+    }, 'image/png');
+  };
+
+  const downloadFile = () => {
     if (!downloadUrl) return;
 
     const a = document.createElement('a');
     a.href = downloadUrl;
-    a.download = `${text.replace(/\s+/g, '_')}_${selectedStyle}.gif`;
+    const extension = outputMode === 'animated' ? 'gif' : 'png';
+    const styleName = outputMode === 'animated' ? selectedAnimationStyle : selectedStaticStyle;
+    a.download = `${text.replace(/\s+/g, '_')}_${styleName}.${extension}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -325,6 +489,30 @@ export default function StudioPage() {
             <div className="grid md:grid-cols-2 gap-8">
               {/* Left: Controls */}
               <div className="space-y-6">
+                {/* Mode Selection Tabs */}
+                <div className="flex rounded-lg bg-gray-100 p-1">
+                  <button
+                    onClick={() => setOutputMode('animated')}
+                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                      outputMode === 'animated'
+                        ? 'bg-white text-slack-purple shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    🎬 Animated GIF
+                  </button>
+                  <button
+                    onClick={() => setOutputMode('static')}
+                    className={`flex-1 py-2 px-4 rounded-md font-medium transition-all ${
+                      outputMode === 'static'
+                        ? 'bg-white text-slack-purple shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    🖼️ Static PNG
+                  </button>
+                </div>
+
                 {/* Step 1: Text Input */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -371,33 +559,50 @@ export default function StudioPage() {
                 {/* Step 3: Style Selection */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    3. Choose Animation Style
+                    3. Choose {outputMode === 'animated' ? 'Animation' : 'Static'} Style
                   </label>
                   <div className="grid grid-cols-3 gap-2">
-                    {styles.map((style) => (
-                      <button
-                        key={style.id}
-                        onClick={() => setSelectedStyle(style.id)}
-                        className={`px-4 py-2 rounded-lg border-2 transition-all ${
-                          selectedStyle === style.id
-                            ? 'border-slack-purple bg-slack-purple text-white'
-                            : 'border-gray-300 hover:border-slack-purple'
-                        }`}
-                      >
-                        <span className="block text-2xl mb-1">{style.icon}</span>
-                        <span className="text-sm">{style.name}</span>
-                      </button>
-                    ))}
+                    {outputMode === 'animated' ? (
+                      animationStyles.map((style) => (
+                        <button
+                          key={style.id}
+                          onClick={() => setSelectedAnimationStyle(style.id)}
+                          className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                            selectedAnimationStyle === style.id
+                              ? 'border-slack-purple bg-slack-purple text-white'
+                              : 'border-gray-300 hover:border-slack-purple'
+                          }`}
+                        >
+                          <span className="block text-2xl mb-1">{style.icon}</span>
+                          <span className="text-sm">{style.name}</span>
+                        </button>
+                      ))
+                    ) : (
+                      staticStyles.map((style) => (
+                        <button
+                          key={style.id}
+                          onClick={() => setSelectedStaticStyle(style.id)}
+                          className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                            selectedStaticStyle === style.id
+                              ? 'border-slack-purple bg-slack-purple text-white'
+                              : 'border-gray-300 hover:border-slack-purple'
+                          }`}
+                        >
+                          <span className="block text-2xl mb-1">{style.icon}</span>
+                          <span className="text-sm">{style.name}</span>
+                        </button>
+                      ))
+                    )}
                   </div>
                 </div>
 
                 {/* Step 4: Generate */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    4. Generate GIF
+                    4. Generate {outputMode === 'animated' ? 'GIF' : 'PNG'}
                   </label>
                   <button
-                    onClick={generateGIF}
+                    onClick={outputMode === 'animated' ? generateGIF : generatePNG}
                     disabled={!text || isGenerating}
                     className={`w-full py-3 px-4 rounded-lg font-semibold transition-all ${
                       !text || isGenerating
@@ -405,17 +610,17 @@ export default function StudioPage() {
                         : 'bg-slack-purple text-white hover:bg-opacity-90'
                     }`}
                   >
-                    {isGenerating ? 'Generating...' : 'Generate GIF'}
+                    {isGenerating ? 'Generating...' : `Generate ${outputMode === 'animated' ? 'GIF' : 'PNG'}`}
                   </button>
                 </div>
 
                 {/* Download Button */}
                 {downloadUrl && (
                   <button
-                    onClick={downloadGIF}
+                    onClick={downloadFile}
                     className="w-full py-3 px-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-all"
                   >
-                    📥 Download GIF
+                    📥 Download {outputMode === 'animated' ? 'GIF' : 'PNG'}
                   </button>
                 )}
               </div>
@@ -438,15 +643,15 @@ export default function StudioPage() {
                   128x128px - Slack Emoji Size
                 </p>
 
-                {/* Generated GIF Preview */}
+                {/* Generated File Preview */}
                 {downloadUrl && (
                   <div className="mt-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Generated GIF
+                      Generated {outputMode === 'animated' ? 'GIF' : 'PNG'}
                     </label>
                     <img
                       src={downloadUrl}
-                      alt="Generated GIF"
+                      alt={`Generated ${outputMode === 'animated' ? 'GIF' : 'PNG'}`}
                       className="w-32 h-32 bg-white rounded shadow-md"
                     />
                   </div>
