@@ -99,42 +99,58 @@ export default function StudioPage() {
           ctx.shadowBlur = 8;
           ctx.shadowOffsetX = 3;
           ctx.shadowOffsetY = 3;
-          ctx.fillStyle = '#1264A3';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, 64);
           ctx.shadowBlur = 0;
           break;
         
         case 'outline':
-          ctx.strokeStyle = '#E01E5A';
+          ctx.strokeStyle = textColor;
           ctx.lineWidth = 3;
           ctx.strokeText(text, 64, 64);
-          ctx.fillStyle = '#FFFFFF';
+          // Fill with contrasting color (white or black based on background)
+          ctx.fillStyle = useTransparentBg ? textColor : '#FFFFFF';
           ctx.fillText(text, 64, 64);
           break;
         
         case 'gradient':
           const gradient = ctx.createLinearGradient(0, 0, 128, 128);
-          gradient.addColorStop(0, '#FF6B6B');
-          gradient.addColorStop(0.5, '#4ECDC4');
-          gradient.addColorStop(1, '#45B7D1');
+          // Use user's color as base for gradient
+          gradient.addColorStop(0, textColor);
+          gradient.addColorStop(0.5, useGradient ? '#FFD700' : textColor);
+          gradient.addColorStop(1, useGradient ? '#FF6B35' : textColor);
           ctx.fillStyle = gradient;
           ctx.fillText(text, 64, 64);
           break;
         
         case '3d':
           // 3D effect with multiple layers
-          ctx.fillStyle = '#888';
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
           ctx.fillText(text, 66, 66);
-          ctx.fillStyle = '#666';
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
           ctx.fillText(text, 65, 65);
-          ctx.fillStyle = '#2EB67D';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, 64);
           break;
         
         case 'neon':
-          ctx.shadowColor = '#FF00FF';
+          ctx.shadowColor = textColor;
           ctx.shadowBlur = 20;
-          ctx.strokeStyle = '#FF00FF';
+          ctx.strokeStyle = textColor;
           ctx.lineWidth = 2;
           ctx.strokeText(text, 64, 64);
           ctx.fillStyle = '#FFFFFF';
@@ -590,41 +606,57 @@ export default function StudioPage() {
         ctx.shadowBlur = 8;
         ctx.shadowOffsetX = 3;
         ctx.shadowOffsetY = 3;
-        ctx.fillStyle = '#1264A3';
+        if (useGradient) {
+          const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+          gradient.addColorStop(0, textColor);
+          gradient.addColorStop(1, '#FFD700');
+          ctx.fillStyle = gradient;
+        } else {
+          ctx.fillStyle = textColor;
+        }
         ctx.fillText(text, 64, 64);
         ctx.shadowBlur = 0;
         break;
       
       case 'outline':
-        ctx.strokeStyle = '#E01E5A';
+        ctx.strokeStyle = textColor;
         ctx.lineWidth = 3;
         ctx.strokeText(text, 64, 64);
-        ctx.fillStyle = '#FFFFFF';
+        // Fill with contrasting color (white or black based on background)
+        ctx.fillStyle = useTransparentBg ? textColor : '#FFFFFF';
         ctx.fillText(text, 64, 64);
         break;
       
       case 'gradient':
         const gradient = ctx.createLinearGradient(0, 0, 128, 128);
-        gradient.addColorStop(0, '#FF6B6B');
-        gradient.addColorStop(0.5, '#4ECDC4');
-        gradient.addColorStop(1, '#45B7D1');
+        // Use user's color as base for gradient
+        gradient.addColorStop(0, textColor);
+        gradient.addColorStop(0.5, useGradient ? '#FFD700' : textColor);
+        gradient.addColorStop(1, useGradient ? '#FF6B35' : textColor);
         ctx.fillStyle = gradient;
         ctx.fillText(text, 64, 64);
         break;
       
       case '3d':
-        ctx.fillStyle = '#888';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
         ctx.fillText(text, 66, 66);
-        ctx.fillStyle = '#666';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
         ctx.fillText(text, 65, 65);
-        ctx.fillStyle = '#2EB67D';
+        if (useGradient) {
+          const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+          gradient.addColorStop(0, textColor);
+          gradient.addColorStop(1, '#FFD700');
+          ctx.fillStyle = gradient;
+        } else {
+          ctx.fillStyle = textColor;
+        }
         ctx.fillText(text, 64, 64);
         break;
       
       case 'neon':
-        ctx.shadowColor = '#FF00FF';
+        ctx.shadowColor = textColor;
         ctx.shadowBlur = 20;
-        ctx.strokeStyle = '#FF00FF';
+        ctx.strokeStyle = textColor;
         ctx.lineWidth = 2;
         ctx.strokeText(text, 64, 64);
         ctx.fillStyle = '#FFFFFF';
