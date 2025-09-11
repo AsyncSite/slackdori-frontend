@@ -9,6 +9,7 @@ type AnimationStyle = 'bounce' | 'spin' | 'rainbow' | 'shake' | 'fade' | 'zoom';
 export default function StudioPage() {
   const [text, setText] = useState('');
   const [selectedStyle, setSelectedStyle] = useState<AnimationStyle>('bounce');
+  const [fontSize, setFontSize] = useState(32);
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,7 +37,7 @@ export default function StudioPage() {
 
     const animate = () => {
       ctx.clearRect(0, 0, 128, 128);
-      ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -96,7 +97,7 @@ export default function StudioPage() {
     return () => {
       cancelAnimationFrame(animationId);
     };
-  }, [text, selectedStyle]);
+  }, [text, selectedStyle, fontSize]);
 
   const generateGIF = async () => {
     if (!text || !canvasRef.current) return;
@@ -121,7 +122,7 @@ export default function StudioPage() {
     const totalFrames = 20;
     for (let frame = 0; frame < totalFrames; frame++) {
       ctx.clearRect(0, 0, 128, 128);
-      ctx.font = 'bold 32px system-ui, -apple-system, sans-serif';
+      ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
 
@@ -245,10 +246,35 @@ export default function StudioPage() {
                   </p>
                 </div>
 
-                {/* Step 2: Style Selection */}
+                {/* Step 2: Text Size */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    2. Choose Animation Style
+                    2. Adjust Text Size
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <input
+                      type="range"
+                      min="16"
+                      max="48"
+                      value={fontSize}
+                      onChange={(e) => setFontSize(Number(e.target.value))}
+                      className="flex-1"
+                    />
+                    <span className="text-sm font-medium w-12 text-center">
+                      {fontSize}px
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Small</span>
+                    <span>Medium</span>
+                    <span>Large</span>
+                  </div>
+                </div>
+
+                {/* Step 3: Style Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    3. Choose Animation Style
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {styles.map((style) => (
@@ -268,10 +294,10 @@ export default function StudioPage() {
                   </div>
                 </div>
 
-                {/* Step 3: Generate */}
+                {/* Step 4: Generate */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    3. Generate GIF
+                    4. Generate GIF
                   </label>
                   <button
                     onClick={generateGIF}
