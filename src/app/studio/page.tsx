@@ -176,7 +176,14 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.rotate((frame * 0.1) % (Math.PI * 2));
-          ctx.fillStyle = '#1264A3';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
@@ -189,14 +196,30 @@ export default function StudioPage() {
 
         case 'shake':
           const shakeX = 64 + Math.sin(frame * 0.5) * 5;
-          ctx.fillStyle = '#E01E5A';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, shakeX, 64);
           break;
 
         case 'fade':
           const opacity = (Math.sin(frame * 0.1) + 1) / 2;
-          ctx.fillStyle = `rgba(74, 21, 75, ${opacity})`;
+          ctx.globalAlpha = opacity;
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, 64);
+          ctx.globalAlpha = 1;
           break;
 
         case 'zoom':
@@ -204,7 +227,14 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.scale(scale, scale);
-          ctx.fillStyle = '#2EB67D';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
@@ -214,16 +244,29 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.scale(pulseScale, pulseScale);
-          ctx.fillStyle = '#FF1744';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
 
         case 'glitch':
           // Glitch effect with random offsets
-          ctx.fillStyle = '#00FFFF';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64 + Math.random() * 4 - 2, 64);
-          ctx.fillStyle = '#FF00FF';
           ctx.globalAlpha = 0.5;
           ctx.fillText(text, 64 + Math.random() * 4 - 2, 64 + Math.random() * 2 - 1);
           ctx.globalAlpha = 1;
@@ -232,16 +275,30 @@ export default function StudioPage() {
         case 'wave':
           // Wave effect
           const waveY = 64 + Math.sin(frame * 0.1) * 10 * Math.cos(frame * 0.05);
-          ctx.fillStyle = '#1E88E5';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, waveY);
           break;
 
         case 'glow':
           // Glow effect with shadow
           const glowIntensity = (Math.sin(frame * 0.1) + 1) * 10;
-          ctx.shadowColor = '#FFD700';
+          ctx.shadowColor = textColor;
           ctx.shadowBlur = glowIntensity;
-          ctx.fillStyle = '#FFD700';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, 64);
           ctx.shadowBlur = 0;
           break;
@@ -252,7 +309,14 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.scale(flipScale, 1);
-          ctx.fillStyle = '#9C27B0';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
@@ -332,7 +396,14 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.rotate((frame * 0.3) % (Math.PI * 2));
-          ctx.fillStyle = '#1264A3';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
@@ -345,14 +416,30 @@ export default function StudioPage() {
 
         case 'shake':
           const shakeX = 64 + Math.sin(frame * 1.5) * 5;
-          ctx.fillStyle = '#E01E5A';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, shakeX, 64);
           break;
 
         case 'fade':
           const opacity = (Math.sin(frame * 0.3) + 1) / 2;
-          ctx.fillStyle = `rgba(74, 21, 75, ${opacity})`;
+          ctx.globalAlpha = opacity;
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, 64);
+          ctx.globalAlpha = 1;
           break;
 
         case 'zoom':
@@ -360,7 +447,14 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.scale(scale, scale);
-          ctx.fillStyle = '#2EB67D';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
@@ -370,15 +464,28 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.scale(pulseScale, pulseScale);
-          ctx.fillStyle = '#FF1744';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
 
         case 'glitch':
-          ctx.fillStyle = '#00FFFF';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64 + (frame % 10 < 5 ? 2 : -2), 64);
-          ctx.fillStyle = '#FF00FF';
           ctx.globalAlpha = 0.5;
           ctx.fillText(text, 64 + (frame % 10 < 5 ? -2 : 2), 64 + 1);
           ctx.globalAlpha = 1;
@@ -386,15 +493,29 @@ export default function StudioPage() {
 
         case 'wave':
           const waveY = 64 + Math.sin(frame * 0.3) * 10 * Math.cos(frame * 0.15);
-          ctx.fillStyle = '#1E88E5';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, waveY);
           break;
 
         case 'glow':
           const glowIntensity = (Math.sin(frame * 0.3) + 1) * 10;
-          ctx.shadowColor = '#FFD700';
+          ctx.shadowColor = textColor;
           ctx.shadowBlur = glowIntensity;
-          ctx.fillStyle = '#FFD700';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(0, 0, 128, 128);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 64, 64);
           ctx.shadowBlur = 0;
           break;
@@ -404,7 +525,14 @@ export default function StudioPage() {
           ctx.save();
           ctx.translate(64, 64);
           ctx.scale(flipScale, 1);
-          ctx.fillStyle = '#9C27B0';
+          if (useGradient) {
+            const gradient = ctx.createLinearGradient(-64, -64, 64, 64);
+            gradient.addColorStop(0, textColor);
+            gradient.addColorStop(1, '#FFD700');
+            ctx.fillStyle = gradient;
+          } else {
+            ctx.fillStyle = textColor;
+          }
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
