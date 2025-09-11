@@ -16,6 +16,8 @@ export default function StudioPage() {
   const [fontSize, setFontSize] = useState(32);
   const [textColor, setTextColor] = useState('#4A154B');
   const [useGradient, setUseGradient] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
+  const [useTransparentBg, setUseTransparentBg] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -68,6 +70,13 @@ export default function StudioPage() {
 
     const drawStatic = () => {
       ctx.clearRect(0, 0, 128, 128);
+      
+      // Draw background if not transparent
+      if (!useTransparentBg) {
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, 128, 128);
+      }
+      
       ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -137,6 +146,13 @@ export default function StudioPage() {
 
     const animate = () => {
       ctx.clearRect(0, 0, 128, 128);
+      
+      // Draw background if not transparent
+      if (!useTransparentBg) {
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, 128, 128);
+      }
+      
       ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -259,7 +275,7 @@ export default function StudioPage() {
         cancelAnimationFrame(animationId);
       }
     };
-  }, [text, selectedAnimationStyle, selectedStaticStyle, fontSize, outputMode, textColor, useGradient]);
+  }, [text, selectedAnimationStyle, selectedStaticStyle, fontSize, outputMode, textColor, useGradient, backgroundColor, useTransparentBg]);
 
   const generateGIF = async () => {
     if (!text || !canvasRef.current) return;
@@ -284,6 +300,13 @@ export default function StudioPage() {
     const totalFrames = 20;
     for (let frame = 0; frame < totalFrames; frame++) {
       ctx.clearRect(0, 0, 128, 128);
+      
+      // Draw background if not transparent
+      if (!useTransparentBg) {
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, 128, 128);
+      }
+      
       ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -411,6 +434,13 @@ export default function StudioPage() {
 
     // Draw the static style one more time
     ctx.clearRect(0, 0, 128, 128);
+    
+    // Draw background if not transparent
+    if (!useTransparentBg) {
+      ctx.fillStyle = backgroundColor;
+      ctx.fillRect(0, 0, 128, 128);
+    }
+    
     ctx.font = `bold ${fontSize}px system-ui, -apple-system, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -597,58 +627,113 @@ export default function StudioPage() {
                   </div>
                 </div>
 
-                {/* Step 3: Choose Color */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    3. Choose Color
-                  </label>
-                  <div className="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4 gap-2 mb-3">
-                    {presetColors.map((color) => (
-                      <button
-                        key={color.value}
-                        onClick={() => setTextColor(color.value)}
-                        className={`h-10 md:h-12 rounded-lg border-2 transition-all ${
-                          textColor === color.value
-                            ? 'border-slack-purple shadow-lg scale-110'
-                            : 'border-gray-300 hover:border-slack-purple'
-                        }`}
-                        style={{ backgroundColor: color.value }}
-                        title={color.name}
-                      />
-                    ))}
-                  </div>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
-                      <input
-                        type="color"
-                        value={textColor}
-                        onChange={(e) => setTextColor(e.target.value)}
-                        className="w-10 h-10 md:w-12 md:h-12 rounded cursor-pointer"
-                      />
-                      <input
-                        type="text"
-                        value={textColor}
-                        onChange={(e) => setTextColor(e.target.value)}
-                        placeholder="#000000"
-                        className="flex-1 sm:w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm md:text-base"
-                      />
-                    </div>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={useGradient}
-                        onChange={(e) => setUseGradient(e.target.checked)}
-                        className="rounded"
-                      />
-                      <span className="text-sm">Gradient</span>
+                {/* Step 3: Choose Colors */}
+                <div className="space-y-4">
+                  {/* Text Color */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      3. Text Color
                     </label>
+                    <div className="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4 gap-2 mb-3">
+                      {presetColors.map((color) => (
+                        <button
+                          key={color.value}
+                          onClick={() => setTextColor(color.value)}
+                          className={`h-10 md:h-12 rounded-lg border-2 transition-all ${
+                            textColor === color.value
+                              ? 'border-slack-purple shadow-lg scale-110'
+                              : 'border-gray-300 hover:border-slack-purple'
+                          }`}
+                          style={{ backgroundColor: color.value }}
+                          title={color.name}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <input
+                          type="color"
+                          value={textColor}
+                          onChange={(e) => setTextColor(e.target.value)}
+                          className="w-10 h-10 md:w-12 md:h-12 rounded cursor-pointer"
+                        />
+                        <input
+                          type="text"
+                          value={textColor}
+                          onChange={(e) => setTextColor(e.target.value)}
+                          placeholder="#000000"
+                          className="flex-1 sm:w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm md:text-base"
+                        />
+                      </div>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          checked={useGradient}
+                          onChange={(e) => setUseGradient(e.target.checked)}
+                          className="rounded"
+                        />
+                        <span className="text-sm">Gradient</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Background Color */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      4. Background
+                    </label>
+                    <div className="mb-3">
+                      <label className="flex items-center gap-2 mb-3">
+                        <input
+                          type="checkbox"
+                          checked={useTransparentBg}
+                          onChange={(e) => setUseTransparentBg(e.target.checked)}
+                          className="rounded"
+                        />
+                        <span className="text-sm">Transparent Background</span>
+                      </label>
+                      {!useTransparentBg && (
+                        <>
+                          <div className="grid grid-cols-4 sm:grid-cols-8 md:grid-cols-4 gap-2 mb-3">
+                            {presetColors.map((color) => (
+                              <button
+                                key={color.value}
+                                onClick={() => setBackgroundColor(color.value)}
+                                className={`h-10 md:h-12 rounded-lg border-2 transition-all ${
+                                  backgroundColor === color.value
+                                    ? 'border-slack-purple shadow-lg scale-110'
+                                    : 'border-gray-300 hover:border-slack-purple'
+                                }`}
+                                style={{ backgroundColor: color.value }}
+                                title={color.name}
+                              />
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <input
+                              type="color"
+                              value={backgroundColor}
+                              onChange={(e) => setBackgroundColor(e.target.value)}
+                              className="w-10 h-10 md:w-12 md:h-12 rounded cursor-pointer"
+                            />
+                            <input
+                              type="text"
+                              value={backgroundColor}
+                              onChange={(e) => setBackgroundColor(e.target.value)}
+                              placeholder="#FFFFFF"
+                              className="w-32 px-3 py-2 border border-gray-300 rounded-lg text-sm md:text-base"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Step 4: Style Selection */}
+                {/* Step 5: Style Selection */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    4. Choose {outputMode === 'animated' ? 'Animation' : 'Static'} Style
+                    5. Choose {outputMode === 'animated' ? 'Animation' : 'Static'} Style
                   </label>
                   <div className="grid grid-cols-3 gap-2">
                     {outputMode === 'animated' ? (
@@ -720,23 +805,23 @@ export default function StudioPage() {
                   Live Preview
                 </label>
                 <div className="bg-gray-100 rounded-lg p-8">
-                  <div className="relative inline-block">
-                    <div 
-                      className="absolute inset-0 rounded"
-                      style={{
-                        backgroundImage: `linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
-                                        linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
-                                        linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
-                                        linear-gradient(-45deg, transparent 75%, #f0f0f0 75%)`,
-                        backgroundSize: '8px 8px',
-                        backgroundPosition: '0 0, 0 4px, 4px -4px, -4px 0px'
-                      }}
-                    />
+                  <div 
+                    className="inline-block rounded"
+                    style={{
+                      backgroundImage: `linear-gradient(45deg, #e0e0e0 25%, transparent 25%), 
+                                      linear-gradient(-45deg, #e0e0e0 25%, transparent 25%), 
+                                      linear-gradient(45deg, transparent 75%, #e0e0e0 75%), 
+                                      linear-gradient(-45deg, transparent 75%, #e0e0e0 75%)`,
+                      backgroundSize: '16px 16px',
+                      backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
+                      backgroundColor: '#ffffff'
+                    }}
+                  >
                     <canvas
                       ref={canvasRef}
                       width={128}
                       height={128}
-                      className="relative rounded shadow-md"
+                      className="block rounded shadow-md"
                       style={{ imageRendering: 'pixelated' }}
                     />
                   </div>
