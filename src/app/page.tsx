@@ -117,7 +117,6 @@ export default function HomePage() {
                 <div className="flex gap-2 mb-4 items-center">
                   {pack.preview.slice(0, 4).map(emojiName => {
                     // Check if emoji exists as GIF first, then fallback to PNG
-                    const extensions = ['.gif', '.png'];
                     const imgSrc = `${REPO_BASE}/images/${pack.id}/${emojiName}`;
                     
                     return (
