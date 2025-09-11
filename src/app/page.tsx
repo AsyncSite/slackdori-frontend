@@ -115,15 +115,28 @@ export default function HomePage() {
                   {pack.description}
                 </p>
                 <div className="flex gap-2 mb-4 items-center">
-                  {pack.preview.slice(0, 4).map(emojiName => (
-                    <img
-                      key={emojiName}
-                      src={`${REPO_BASE}/images/${pack.id}/${emojiName}.png`}
-                      alt={emojiName}
-                      className="w-10 h-10"
-                      loading="lazy"
-                    />
-                  ))}
+                  {pack.preview.slice(0, 4).map(emojiName => {
+                    // Check if emoji exists as GIF first, then fallback to PNG
+                    const extensions = ['.gif', '.png'];
+                    const imgSrc = `${REPO_BASE}/images/${pack.id}/${emojiName}`;
+                    
+                    return (
+                      <img
+                        key={emojiName}
+                        src={`${imgSrc}.gif`}
+                        alt={emojiName}
+                        className="w-10 h-10"
+                        loading="lazy"
+                        onError={(e) => {
+                          // Fallback to PNG if GIF doesn't exist
+                          const target = e.target as HTMLImageElement;
+                          if (target.src.endsWith('.gif')) {
+                            target.src = `${imgSrc}.png`;
+                          }
+                        }}
+                      />
+                    );
+                  })}
                   {pack.emojiCount > 4 && (
                     <span className="text-gray-400">+{pack.emojiCount - 4}</span>
                   )}
