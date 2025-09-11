@@ -45,6 +45,9 @@ export default function HomePage() {
               <Link href="/packs" className="btn-secondary">
                 Browse {packs.length} Emoji Packs
               </Link>
+              <Link href="/studio" className="btn-secondary">
+                ✨ Create Your Own
+              </Link>
               <Link href="#how-it-works" className="bg-white text-slack-purple px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-200">
                 How It Works
               </Link>
