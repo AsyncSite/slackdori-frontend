@@ -262,7 +262,7 @@ export default function StudioPage() {
       ctx.textBaseline = 'middle';
 
       // Apply animation
-      switch (selectedStyle) {
+      switch (selectedAnimationStyle) {
         case 'bounce':
           const bounceY = 64 + Math.sin(frame * 0.3) * 20;
           ctx.fillStyle = '#4A154B';
