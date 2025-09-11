@@ -1,5 +1,25 @@
 # Technical Decisions Log
 
+## 2025-09-11: Installer Path Split (Enterprise vs Non‑Enterprise)
+
+### Decision
+- Backend server path (Slack Admin API) is Enterprise-only and will be decommissioned in production for now.
+- Default installer for non‑enterprise users is a Chrome Extension-based client installer.
+
+### Why
+- Slack server-side emoji APIs for adding custom emojis require Enterprise Grid and org-admin user tokens (`user_scope=admin.emoji:write`).
+- Most users (including current account) are non‑enterprise; server path leads to `invalid_scope`.
+
+### Trade-offs
+- Server features (queue/worker/progress) not used for non‑enterprise immediately.
+- Client installer must handle page automation and throttling.
+
+### Revisit When
+- We have an Enterprise Grid org with proper admin tokens.
+- Demand for server-driven installation resurfaces.
+
+---
+
 ## 2024-01-10: Simplified Project Structure
 
 ### Decision
@@ -53,22 +73,6 @@ Removed Jest, Playwright, and testing infrastructure.
 - After first paying customer
 - When bug reports become frequent
 - When team grows beyond 2 developers
-
----
-
-## Decision Template
-
-### Decision
-What was decided?
-
-### Why
-What problem does this solve?
-
-### Trade-offs
-What are we giving up?
-
-### Revisit When
-Under what conditions should we reconsider?
 
 ---
 *Purpose: Document the "why" behind technical choices*
