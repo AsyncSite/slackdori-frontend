@@ -5,12 +5,16 @@ import { useParams, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { api, PackDetails } from '@/lib/api';
 import { downloadPackAsZip } from '@/lib/download';
+import { EmojiGrid } from '@/components/emoji/EmojiGrid';
+import { ToastContainer } from '@/components/ui/Toast';
+import { useToast } from '@/hooks/useToast';
 
 export default function PackDetailPage() {
   const params = useParams();
   const [pack, setPack] = useState<PackDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
+  const { toasts, removeToast, success, error, info } = useToast();
   
   useEffect(() => {
     if (params.id) {
@@ -70,27 +74,16 @@ export default function PackDetailPage() {
       <div className="container mx-auto px-4 py-12">
         <h2 className="text-2xl font-bold mb-6">Emojis in this pack</h2>
         
-        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-          {pack.emojis.map(emoji => (
-            <div 
-              key={emoji.name}
-              className="bg-white rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow"
-            >
-              <img
-                src={emoji.imageUrl}
-                alt={emoji.name}
-                className="w-16 h-16 mx-auto mb-2"
-                loading="lazy"
-              />
-              <p className="text-center text-sm font-mono">:{emoji.name}:</p>
-              {emoji.aliases && emoji.aliases.length > 0 && (
-                <p className="text-center text-xs text-gray-500 mt-1">
-                  {emoji.aliases.map(a => `:${a}:`).join(' ')}
-                </p>
-              )}
-            </div>
-          ))}
-        </div>
+        <EmojiGrid
+          emojis={pack.emojis}
+          packId={pack.id}
+          packName={pack.name}
+          onToast={(message, type) => {
+            if (type === 'success') success(message);
+            else if (type === 'error') error(message);
+            else info(message);
+          }}
+        />
         
         {/* Installation Instructions */}
         <div className="mt-12 bg-white rounded-lg shadow-md p-8">
@@ -154,6 +147,9 @@ export default function PackDetailPage() {
           </div>
         </div>
       </div>
+      
+      {/* Toast Container */}
+      <ToastContainer toasts={toasts} onClose={removeToast} />
     </div>
   );
 }
