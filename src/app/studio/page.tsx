@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import GIF from 'gif.js';
 
-type AnimationStyle = 'bounce' | 'spin' | 'rainbow' | 'shake' | 'fade' | 'zoom';
+type AnimationStyle = 'bounce' | 'spin' | 'rainbow' | 'shake' | 'fade' | 'zoom' | 'pulse' | 'glitch' | 'wave' | 'glow' | 'flip';
 
 export default function StudioPage() {
   const [text, setText] = useState('');
@@ -22,6 +22,11 @@ export default function StudioPage() {
     { id: 'shake', name: 'Shake', icon: '〰️' },
     { id: 'fade', name: 'Fade', icon: '👻' },
     { id: 'zoom', name: 'Zoom', icon: '🔍' },
+    { id: 'pulse', name: 'Pulse', icon: '💗' },
+    { id: 'glitch', name: 'Glitch', icon: '📺' },
+    { id: 'wave', name: 'Wave', icon: '🌊' },
+    { id: 'glow', name: 'Glow', icon: '✨' },
+    { id: 'flip', name: 'Flip', icon: '🔃' },
   ];
 
   // Animation preview
@@ -82,6 +87,54 @@ export default function StudioPage() {
           ctx.translate(64, 64);
           ctx.scale(scale, scale);
           ctx.fillStyle = '#2EB67D';
+          ctx.fillText(text, 0, 0);
+          ctx.restore();
+          break;
+
+        case 'pulse':
+          const pulseScale = 1 + Math.sin(frame * 0.2) * 0.2;
+          ctx.save();
+          ctx.translate(64, 64);
+          ctx.scale(pulseScale, pulseScale);
+          ctx.fillStyle = '#FF1744';
+          ctx.fillText(text, 0, 0);
+          ctx.restore();
+          break;
+
+        case 'glitch':
+          // Glitch effect with random offsets
+          ctx.fillStyle = '#00FFFF';
+          ctx.fillText(text, 64 + Math.random() * 4 - 2, 64);
+          ctx.fillStyle = '#FF00FF';
+          ctx.globalAlpha = 0.5;
+          ctx.fillText(text, 64 + Math.random() * 4 - 2, 64 + Math.random() * 2 - 1);
+          ctx.globalAlpha = 1;
+          break;
+
+        case 'wave':
+          // Wave effect
+          const waveY = 64 + Math.sin(frame * 0.1) * 10 * Math.cos(frame * 0.05);
+          ctx.fillStyle = '#1E88E5';
+          ctx.fillText(text, 64, waveY);
+          break;
+
+        case 'glow':
+          // Glow effect with shadow
+          const glowIntensity = (Math.sin(frame * 0.1) + 1) * 10;
+          ctx.shadowColor = '#FFD700';
+          ctx.shadowBlur = glowIntensity;
+          ctx.fillStyle = '#FFD700';
+          ctx.fillText(text, 64, 64);
+          ctx.shadowBlur = 0;
+          break;
+
+        case 'flip':
+          // Flip effect
+          const flipScale = Math.cos(frame * 0.1);
+          ctx.save();
+          ctx.translate(64, 64);
+          ctx.scale(flipScale, 1);
+          ctx.fillStyle = '#9C27B0';
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
@@ -167,6 +220,50 @@ export default function StudioPage() {
           ctx.translate(64, 64);
           ctx.scale(scale, scale);
           ctx.fillStyle = '#2EB67D';
+          ctx.fillText(text, 0, 0);
+          ctx.restore();
+          break;
+
+        case 'pulse':
+          const pulseScale = 1 + Math.sin(frame * 0.4) * 0.2;
+          ctx.save();
+          ctx.translate(64, 64);
+          ctx.scale(pulseScale, pulseScale);
+          ctx.fillStyle = '#FF1744';
+          ctx.fillText(text, 0, 0);
+          ctx.restore();
+          break;
+
+        case 'glitch':
+          ctx.fillStyle = '#00FFFF';
+          ctx.fillText(text, 64 + (frame % 10 < 5 ? 2 : -2), 64);
+          ctx.fillStyle = '#FF00FF';
+          ctx.globalAlpha = 0.5;
+          ctx.fillText(text, 64 + (frame % 10 < 5 ? -2 : 2), 64 + 1);
+          ctx.globalAlpha = 1;
+          break;
+
+        case 'wave':
+          const waveY = 64 + Math.sin(frame * 0.3) * 10 * Math.cos(frame * 0.15);
+          ctx.fillStyle = '#1E88E5';
+          ctx.fillText(text, 64, waveY);
+          break;
+
+        case 'glow':
+          const glowIntensity = (Math.sin(frame * 0.3) + 1) * 10;
+          ctx.shadowColor = '#FFD700';
+          ctx.shadowBlur = glowIntensity;
+          ctx.fillStyle = '#FFD700';
+          ctx.fillText(text, 64, 64);
+          ctx.shadowBlur = 0;
+          break;
+
+        case 'flip':
+          const flipScale = Math.cos(frame * 0.3);
+          ctx.save();
+          ctx.translate(64, 64);
+          ctx.scale(flipScale, 1);
+          ctx.fillStyle = '#9C27B0';
           ctx.fillText(text, 0, 0);
           ctx.restore();
           break;
