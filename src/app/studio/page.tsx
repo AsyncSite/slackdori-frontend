@@ -733,7 +733,7 @@ export default function StudioPage() {
                     <input
                       type="range"
                       min="16"
-                      max="96"
+                      max="120"
                       value={fontSize}
                       onChange={(e) => setFontSize(Number(e.target.value))}
                       className="flex-1"
