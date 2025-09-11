@@ -54,23 +54,18 @@ export default function PacksPage() {
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white">
-      {/* Navigation Header */}
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/" className="text-slack-purple hover:underline text-sm md:text-base">
+      {/* Hero Section with Navigation */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+        <div className="container mx-auto px-4 pt-4 pb-16">
+          {/* Navigation */}
+          <div className="flex items-center justify-between mb-12">
+            <Link href="/" className="text-white/90 hover:text-white text-sm md:text-base">
               ← Back to Home
             </Link>
-            <Link href="/studio" className="text-slack-purple hover:underline text-sm md:text-base">
+            <Link href="/studio" className="text-white/90 hover:text-white text-sm md:text-base">
               Create Emoji →
             </Link>
           </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-        <div className="container mx-auto px-4 py-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Slack Emoji Packs
           </h1>
