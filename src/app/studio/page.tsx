@@ -694,13 +694,35 @@ export default function StudioPage() {
       <div className="container mx-auto px-4 pt-4 pb-6 md:pb-12">
         {/* Navigation */}
         <div className="flex items-center justify-between mb-6 md:mb-8">
-          <Link href="/" className="text-slack-purple hover:opacity-80 text-sm md:text-base">
-            ← Back to Home
+          <Link 
+            href="/" 
+            className="text-slack-purple/70 hover:text-slack-purple text-2xl transition-all hover:scale-110 hover:-translate-x-1"
+            style={{
+              animation: 'float-left 3s ease-in-out infinite'
+            }}
+          >
+            ←
           </Link>
-          <Link href="/packs" className="text-slack-purple hover:opacity-80 text-sm md:text-base">
-            Browse Packs →
+          <Link 
+            href="/packs" 
+            className="text-slack-purple/70 hover:text-slack-purple text-2xl transition-all hover:scale-110 hover:translate-x-1"
+            style={{
+              animation: 'float-right 3s ease-in-out infinite'
+            }}
+          >
+            →
           </Link>
         </div>
+        <style jsx>{`
+          @keyframes float-left {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-3px); }
+          }
+          @keyframes float-right {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(3px); }
+          }
+        `}</style>
         
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-6 md:mb-8">

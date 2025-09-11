@@ -59,13 +59,35 @@ export default function PacksPage() {
         <div className="container mx-auto px-4 pt-4 pb-16">
           {/* Navigation */}
           <div className="flex items-center justify-between mb-12">
-            <Link href="/" className="text-white/90 hover:text-white text-sm md:text-base">
-              ← Back to Home
+            <Link 
+              href="/" 
+              className="text-white/80 hover:text-white text-2xl transition-all hover:scale-110 hover:-translate-x-1"
+              style={{
+                animation: 'float-left 3s ease-in-out infinite'
+              }}
+            >
+              ←
             </Link>
-            <Link href="/studio" className="text-white/90 hover:text-white text-sm md:text-base">
-              Create Emoji →
+            <Link 
+              href="/studio" 
+              className="text-white/80 hover:text-white text-2xl transition-all hover:scale-110 hover:translate-x-1"
+              style={{
+                animation: 'float-right 3s ease-in-out infinite'
+              }}
+            >
+              →
             </Link>
           </div>
+          <style jsx>{`
+            @keyframes float-left {
+              0%, 100% { transform: translateX(0); }
+              50% { transform: translateX(-3px); }
+            }
+            @keyframes float-right {
+              0%, 100% { transform: translateX(0); }
+              50% { transform: translateX(3px); }
+            }
+          `}</style>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Slack Emoji Packs
           </h1>
