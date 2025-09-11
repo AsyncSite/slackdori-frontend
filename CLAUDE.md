@@ -24,6 +24,9 @@ public/            # Static assets
 ```
 
 ## ✅ Development Workflow
+> Installer path decision (2025-09):
+> - Default path is Chrome Extension-based installer for non‑enterprise users.
+> - Hide backend OAuth UI by default. Show only when `NEXT_PUBLIC_ENTERPRISE=true`.
 
 ### 1. Before Starting
 ```bash

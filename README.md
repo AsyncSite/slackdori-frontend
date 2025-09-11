@@ -2,6 +2,10 @@
 
 One-click Slack emoji pack installation service.
 
+> Important
+> - For non‑enterprise Slack workspaces, installation is handled via a Chrome Extension-based client installer. No backend server is required.
+> - The server (backend) path is Enterprise-only (requires `admin.emoji:write`). Production server will be taken down for now.
+
 ## 🚀 Quick Start
 
 ```bash
@@ -23,6 +27,7 @@ public/         # Static assets
 - [CLAUDE.md](./CLAUDE.md) - Development guidelines
 - [PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md) - Project phases and priorities
 - [DECISIONS.md](./DECISIONS.md) - Technical decisions log
+ - [docs/INSTALLER_EXTENSION.md](./docs/INSTALLER_EXTENSION.md) - Chrome Extension installer (non‑enterprise)
 
 ## 🛠️ Tech Stack
 
