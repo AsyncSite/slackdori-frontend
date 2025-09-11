@@ -235,7 +235,7 @@ export default function StudioPage() {
                   <input
                     type="text"
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => setText(e.target.value.slice(0, 8))}
                     placeholder="Type here... (e.g., 🎉, WOW, 대박)"
                     maxLength={8}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-slack-purple focus:border-transparent"
