@@ -41,15 +41,15 @@ export default function HomePage() {
               Transform your Slack workspace with curated emoji packs.<br />
               No more adding emojis one by one.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-              <div className="flex gap-4">
-                <Link href="/packs" className="btn-secondary">
-                  Browse {packs.length} Emoji Packs
-                </Link>
-                <Link href="/studio" className="btn-secondary">
-                  ✨ Create Your Own
-                </Link>
-              </div>
+            <div className="flex gap-4 justify-center mb-4">
+              <Link href="/packs" className="btn-secondary">
+                Browse {packs.length} Emoji Packs
+              </Link>
+              <Link href="/studio" className="btn-secondary">
+                ✨ Create Your Own
+              </Link>
+            </div>
+            <div className="text-center mb-8">
               <Link href="#how-it-works" className="text-white/80 hover:text-white underline text-sm transition-all duration-200">
                 Learn how it works →
               </Link>
