@@ -13,7 +13,7 @@ export default function StudioPage() {
   const [outputMode, setOutputMode] = useState<OutputMode>('animated');
   const [selectedAnimationStyle, setSelectedAnimationStyle] = useState<AnimationStyle>('bounce');
   const [selectedStaticStyle, setSelectedStaticStyle] = useState<StaticStyle>('plain');
-  const [fontSize, setFontSize] = useState(48);
+  const [fontSize, setFontSize] = useState(60);
   const [textColor, setTextColor] = useState('#4A154B');
   const [useGradient, setUseGradient] = useState(false);
   const [backgroundColor, setBackgroundColor] = useState('#FFFFFF');
@@ -89,7 +89,7 @@ export default function StudioPage() {
     // Use the smaller of vertical and horizontal limits
     const finalSize = Math.min(maxFontSize, horizontalLimit, baseSize * 1.2);
     
-    return Math.max(Math.min(finalSize, 120), 16);
+    return Math.max(Math.min(finalSize, 150), 16);
   };
   
   // Helper function to render multi-line text
@@ -872,7 +872,8 @@ export default function StudioPage() {
                     <input
                       type="range"
                       min="16"
-                      max="120"
+                      max="150"
+                      step="2"
                       value={fontSize}
                       onChange={(e) => setFontSize(Number(e.target.value))}
                       className="flex-1"
